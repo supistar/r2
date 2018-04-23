@@ -62,7 +62,7 @@ export default class OrderImpl implements Order {
   }
 
   get filledNotional(): number {
-    return this.averageFilledPrice * this.filledSize;
+    return this.averageFilledPrice * this.filledNotionalSize;
   }
 }
 

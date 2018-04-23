@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import fetch, { RequestInit as FetchRequestInit } from 'node-fetch';
 import { getLogger } from '@bitr/logger';
 
@@ -9,12 +10,13 @@ export default class WebClient {
 
   async fetch<T>(
     path: string,
-    init: FetchRequestInit = { timeout: WebClient.fetchTimeout },
+    init: FetchRequestInit = {},
     verbose: boolean = true
   ): Promise<T> {
     const url = this.baseUrl + path;
-    this.log.debug(`Sending HTTP request... URL: ${url} Request: ${JSON.stringify(init)}`);
-    const res = await fetch(url, init);
+    const options = _.merge({ timeout: WebClient.fetchTimeout }, init);
+    this.log.debug(`Sending HTTP request... URL: ${url} Request: ${JSON.stringify(options)}`);
+    const res = await fetch(url, options);
     let logText = `Response from ${res.url}. ` + `Status Code: ${res.status} (${res.statusText}) `;
     this.log.debug(logText);
     const content = await res.text();

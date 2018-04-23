@@ -99,3 +99,13 @@ export class ChildOrder extends Castable {
 }
 
 export type ChildOrdersResponse = ChildOrder[];
+
+export enum BoardState {
+  NORMAL = 'Normal',
+  BUSY = 'BUSY',
+  VERY_BUSY = 'VERY BUSY',
+  SUPER_BUSY = 'SUPER BUSY',
+  NO_ORDER = 'NO ORDER',
+  STOP = 'STOP'
+}
+

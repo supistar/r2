@@ -101,7 +101,7 @@ export default class PairTrader extends EventEmitter {
     this.log.info(t`SendingOrderTargettingQuote`, formatQuote(quote));
     const brokerConfig = findBrokerConfig(this.configStore.config, quote.broker);
     const { config } = this.configStore;
-    const { cashMarginType, leverageLevel } = brokerConfig;
+    const { cashMarginType, leverageLevel, commissionPercent, commissionPaidByQuoted } = brokerConfig;
     const orderSide = quote.side === QuoteSide.Ask ? OrderSide.Buy : OrderSide.Sell;
     const orderPrice = 
      (quote.side === QuoteSide.Ask && config.acceptablePriceRange !== undefined)
@@ -117,7 +117,9 @@ export default class PairTrader extends EventEmitter {
       price: orderPrice,
       cashMarginType,
       type: orderType,
-      leverageLevel
+      leverageLevel,
+      commissionPercent,
+      commissionPaidByQuoted
     });
     await this.brokerAdapterRouter.send(order);
     return order;

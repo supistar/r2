@@ -12,6 +12,8 @@ export interface OrderInit {
   cashMarginType: CashMarginType;
   type: OrderType;
   leverageLevel: number;
+  commissionPercent: number;
+  commissionPaidByQuoted: boolean;
 }
 
 export default class OrderImpl implements Order {
@@ -26,6 +28,8 @@ export default class OrderImpl implements Order {
   cashMarginType: CashMarginType;
   type: OrderType;
   leverageLevel: number;
+  commissionPercent: number;
+  commissionPaidByQuoted: boolean;
   id: string = uuid();
   symbol: string;
   timeInForce: TimeInForce = TimeInForce.None;

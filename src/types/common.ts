@@ -34,6 +34,8 @@ export interface Order {
   sentTime: Date;
   lastUpdated: Date;
   executions: Execution[];
+  commissionPercent: number;
+  commissionPaidByQuoted: boolean;
 }
 
 export enum OrderSide {

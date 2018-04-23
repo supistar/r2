@@ -59,7 +59,9 @@ export default class SingleLegHandler {
       price,
       cashMarginType: largeLeg.cashMarginType,
       type: OrderType.Limit,
-      leverageLevel: largeLeg.leverageLevel
+      leverageLevel: largeLeg.leverageLevel,
+      commissionPercent: largeLeg.commissionPercent,
+      commissionPaidByQuoted: largeLeg.commissionPaidByQuoted
     });
     await this.sendOrderWithTtl(reversalOrder, options.ttl);
     return [reversalOrder];
@@ -81,7 +83,9 @@ export default class SingleLegHandler {
       price,
       cashMarginType: smallLeg.cashMarginType,
       type: OrderType.Limit,
-      leverageLevel: smallLeg.leverageLevel
+      leverageLevel: smallLeg.leverageLevel,
+      commissionPercent: smallLeg.commissionPercent,
+      commissionPaidByQuoted: smallLeg.commissionPaidByQuoted
     });
     await this.sendOrderWithTtl(proceedOrder, options.ttl);
     return [proceedOrder];

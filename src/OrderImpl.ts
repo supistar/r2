@@ -55,6 +55,12 @@ export default class OrderImpl implements Order {
     return this.status === OrderStatus.Filled;
   }
 
+  get filledNotionalSize(): number {
+    return (this.commissionPaidByQuoted && this.side === OrderSide.Buy)
+      ? eRound(this.filledSize * (1 - this.commissionPercent / 100) / (1 + this.commissionPercent / 100))
+      : this.filledSize;
+  }
+
   get filledNotional(): number {
     return this.averageFilledPrice * this.filledSize;
   }

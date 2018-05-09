@@ -70,7 +70,11 @@ export default class SpreadAnalyzer {
 
     const invertedSpread = bid.price - ask.price;
     const availableVolume = _.floor(_.min([bid.volume, ask.volume]) as number, LOT_MIN_DECIMAL_PLACE);
-    const allowedShortSize = positionMap[bid.broker].allowedShortSize;
+    let allowedShortSize = positionMap[bid.broker].allowedShortSize;
+    const bidBrokerConfig = findBrokerConfig(this.configStore.config, bid.broker);
+    if (bidBrokerConfig.commissionPaidByQuoted) {
+      allowedShortSize = allowedShortSize / (1 + bidBrokerConfig.commissionPercent / 100);
+    }
     const allowedLongSize = positionMap[ask.broker].allowedLongSize;
     let targetVolume = _.min([availableVolume, config.maxSize, allowedShortSize, allowedLongSize]) as number;
     targetVolume = _.floor(targetVolume, LOT_MIN_DECIMAL_PLACE);

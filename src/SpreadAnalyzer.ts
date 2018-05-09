@@ -151,7 +151,14 @@ export default class SpreadAnalyzer {
   }
 
   private getBest(quotes: Quote[]) {
-    const ordered = _.orderBy(quotes, ['price']);
+    const config = this.configStore.config;
+    const ordered = _.orderBy(quotes, o => {
+      if (o.side === QuoteSide.Ask) {
+        return o.price * (1 + findBrokerConfig(config, o.broker).commissionPercent / 100);
+      } else {
+        return o.price / (1 + findBrokerConfig(config, o.broker).commissionPercent / 100);
+      }
+    });
     const ask = _(ordered)
       .filter(q => q.side === QuoteSide.Ask)
       .first();
@@ -162,7 +169,14 @@ export default class SpreadAnalyzer {
   }
 
   private getWorst(quotes: Quote[]) {
-    const ordered = _.orderBy(quotes, ['price']);
+    const config = this.configStore.config;
+    const ordered = _.orderBy(quotes, o => {
+      if (o.side === QuoteSide.Ask) {
+        return o.price * (1 + findBrokerConfig(config, o.broker).commissionPercent / 100);
+      } else {
+        return o.price / (1 + findBrokerConfig(config, o.broker).commissionPercent / 100);
+      }
+    });
     const ask = _(ordered)
       .filter(q => q.side === QuoteSide.Ask)
       .last();

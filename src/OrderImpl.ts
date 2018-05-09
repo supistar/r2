@@ -46,9 +46,11 @@ export default class OrderImpl implements Order {
   }
 
   get averageFilledPrice(): number {
-    return _.isEmpty(this.executions)
+    // If executions is empty, returns 0.
+    const executedSumSize = _.sumBy(this.executions, x => x.size);
+    return executedSumSize === 0
       ? 0
-      : eRound(_.sumBy(this.executions, x => x.size * x.price) / _.sumBy(this.executions, x => x.size));
+      : eRound(_.sumBy(this.executions, x => x.size * x.price) / executedSumSize);
   }
 
   get filled(): boolean {

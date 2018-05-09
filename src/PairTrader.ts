@@ -74,7 +74,7 @@ export default class PairTrader extends EventEmitter {
             await this.activePairStore.put(orders as OrderPair);
           }
         }
-        this.printProfit(orders);
+        this.printProfit(orders, closable);
         break;
       }
 
@@ -89,7 +89,7 @@ export default class PairTrader extends EventEmitter {
         ) {
           const subOrders = await this.singleLegHandler.handle(orders as OrderPair, closable);
           if (subOrders.length !== 0 && subOrders.every(o => o.filled)) {
-            this.printProfit(_.concat(orders, subOrders));
+            this.printProfit(_.concat(orders, subOrders), closable);
           }
         }
         break;
@@ -135,9 +135,12 @@ export default class PairTrader extends EventEmitter {
     });
   }
 
-  private printProfit(orders: OrderImpl[]): void {
+  private printProfit(orders: OrderImpl[], closable: boolean): void {
     const { profit, commission } = calcProfit(orders, this.configStore.config);
-    this.log.info(t`ProfitIs`, _.round(profit));
+    let side = closable ? 'Close' : 'Open';
+    let longBroker = orders[0].side === OrderSide.Buy ? orders[0].broker : orders[1].broker;
+    let shortBroker = orders[0].side === OrderSide.Sell ? orders[0].broker : orders[1].broker;
+    this.log.info(t`ProfitIs`, _.round(profit), longBroker, shortBroker, side);
     if (commission !== 0) {
       this.log.info(t`CommissionIs`, _.round(commission));
     }

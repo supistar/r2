@@ -109,7 +109,7 @@ export default class OppotunitySearcher extends EventEmitter {
           pairWithSummary.exitAnalysisResult as SpreadAnalysisResult,
           pairWithSummary.pair
         );
-        if (limitChecker.check().success) {
+        if (limitChecker.check().success && pairWithSummary.exitAnalysisResult!.targetSatisfied) {
           return { closable: true, key: pairWithSummary.key, exitAnalysisResult: pairWithSummary.exitAnalysisResult };
         }
       }

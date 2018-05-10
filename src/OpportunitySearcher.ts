@@ -104,7 +104,10 @@ export default class OppotunitySearcher extends EventEmitter {
       );
       this.emit('activePairRefresh', pairsWithSummary);
       pairsWithSummary.forEach(x => this.log.info({ hidden: true }, this.formatPairSummary(x.pair, x.pairSummary)));
-      for (const pairWithSummary of pairsWithSummary.filter(x => x.exitAnalysisResult !== undefined)) {
+      const sortedPairsWithSummary = _.orderBy(
+        pairsWithSummary.filter(x => x.exitAnalysisResult !== undefined),
+          x => x.pairSummary!.entryProfitRatio - x.pairSummary!.currentExitCostRatio!);
+      for (const pairWithSummary of sortedPairsWithSummary) {
         const limitChecker = this.limitCheckerFactory.create(
           pairWithSummary.exitAnalysisResult as SpreadAnalysisResult,
           pairWithSummary.pair

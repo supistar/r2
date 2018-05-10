@@ -1,4 +1,4 @@
-import { OnSingleLegConfig, ReverseOption, ProceedOption, OrderSide, OrderType, OrderPair, ConfigStore } from './types';
+import { OnSingleLegConfig, ReverseOption, ProceedOption, OrderSide, OrderPair, ConfigStore } from './types';
 import OrderImpl from './OrderImpl';
 import * as _ from 'lodash';
 import { getLogger } from '@bitr/logger';
@@ -57,7 +57,7 @@ export default class SingleLegHandler {
       size,
       price,
       cashMarginType: largeLeg.cashMarginType,
-      type: OrderType.Limit,
+      type: options.orderType,
       leverageLevel: largeLeg.leverageLevel,
       commissionPercent: largeLeg.commissionPercent,
       commissionPaidByQuoted: largeLeg.commissionPaidByQuoted
@@ -81,7 +81,7 @@ export default class SingleLegHandler {
       size,
       price,
       cashMarginType: smallLeg.cashMarginType,
-      type: OrderType.Limit,
+      type: options.orderType,
       leverageLevel: smallLeg.leverageLevel,
       commissionPercent: smallLeg.commissionPercent,
       commissionPaidByQuoted: smallLeg.commissionPaidByQuoted

@@ -85,16 +85,39 @@ export default class PairTrader extends EventEmitter {
         await Promise.all(cancelTasks);
         if (
           orders.some(o => !o.filled) &&
-          _(orders).sumBy(o => o.filledSize * (o.side === OrderSide.Buy ? -1 : 1)) !== 0
+          this.sumFilledNotionalSize(orders) !== 0
         ) {
           const subOrders = await this.singleLegHandler.handle(orders as OrderPair, closable);
           if (subOrders.length !== 0 && subOrders.every(o => o.filled)) {
-            this.printProfit(_.concat(orders, subOrders), closable);
+            const allOrders = _.concat(orders, subOrders);
+            this.printProfit(allOrders, closable);
+            const totalSize =  this.sumFilledNotionalSize(allOrders);
+            const broker0OrderSize = this.sumFilledNotionalSize(_(allOrders).filter(x => x.broker === orders[0].broker).value());
+            const broker1OrderSize = this.sumFilledNotionalSize(_(allOrders).filter(x => x.broker === orders[1].broker).value());
+            this.log.debug(`Single leg amount : ${totalSize}/${broker0OrderSize}/${broker1OrderSize}`);
+            if (!closable && totalSize === 0 && broker0OrderSize !== 0 && broker1OrderSize !== 0) {
+              this.log.debug(`Putting pair for single leg ${JSON.stringify(allOrders)}.`);
+              await this.activePairStore.put(allOrders as OrderPair);
+            }
           }
         }
         break;
       }
     }
+  }
+
+  private sumFilledNotionalSize(orders: OrderImpl[]): number {
+    return _.floor(_(orders).sumBy(o => {
+      if (o.commissionPaidByQuoted) {
+        return o.filledSize * (o.side === OrderSide.Buy 
+          ? -1 * (1 - o.commissionPercent / 100) / (1 + o.commissionPercent / 100) 
+          : 1);
+      } else {
+        return o.filledSize * (o.side === OrderSide.Buy 
+          ? -1 
+          : 1);
+      }
+    }), 6);
   }
 
   private async sendOrder(quote: Quote, targetVolume: number, orderType: OrderType): Promise<OrderImpl> {

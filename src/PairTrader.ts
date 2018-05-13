@@ -10,7 +10,8 @@ import {
   OrderSide,
   ActivePairStore,
   Quote,
-  OrderPair
+  OrderPair,
+  OrderStatus
 } from './types';
 import t from './intl';
 import { delay, formatQuote } from './util';
@@ -91,13 +92,19 @@ export default class PairTrader extends EventEmitter {
           if (subOrders.length !== 0 && subOrders.every(o => o.filled)) {
             const allOrders = _.concat(orders, subOrders);
             this.printProfit(allOrders, closable);
-            const totalSize =  this.sumFilledNotionalSize(allOrders);
-            const broker0OrderSize = this.sumFilledNotionalSize(_(allOrders).filter(x => x.broker === orders[0].broker).value());
-            const broker1OrderSize = this.sumFilledNotionalSize(_(allOrders).filter(x => x.broker === orders[1].broker).value());
-            this.log.debug(`Single leg amount : ${totalSize}/${broker0OrderSize}/${broker1OrderSize}`);
-            if (!closable && totalSize === 0 && broker0OrderSize !== 0 && broker1OrderSize !== 0) {
-              this.log.debug(`Putting pair for single leg ${JSON.stringify(allOrders)}.`);
-              await this.activePairStore.put(allOrders as OrderPair);
+            const minOrderSize = 0.005;
+            const enoughTotalSize = this.sumFilledNotionalSize(allOrders) < minOrderSize;
+            const broker0Size = this.sumFilledNotionalSize(
+              _(allOrders).filter(x => x.broker === orders[0].broker).value()
+            );
+            const broker1Size = this.sumFilledNotionalSize(
+              _(allOrders).filter(x => x.broker === orders[1].broker).value()
+            );
+            this.log.debug(`Single leg amount : ${enoughTotalSize}/${broker0Size}/${broker1Size}`);
+            if (!closable && enoughTotalSize && broker0Size !== 0 && broker1Size !== 0) {
+              const mergeOrders = this.mergeOrderPair(orders as OrderPair, subOrders);
+              this.log.debug(`Putting pair for single leg ${JSON.stringify(mergeOrders)}.`);
+              await this.activePairStore.put(mergeOrders as OrderPair);
             }
           }
         }
@@ -106,8 +113,41 @@ export default class PairTrader extends EventEmitter {
     }
   }
 
+  private mergeOrderPair(orders: OrderPair, subOrders: OrderImpl[]): OrderPair {
+    return _(orders as OrderImpl[]).map(order => {
+      const subOrder = _(subOrders).filter(o => o.broker === order.broker).value();
+
+      if (subOrder.length > 0 && subOrder.every(o => o.filled)) {
+        order.status = OrderStatus.Filled;
+        const allOrders = _.concat(order, subOrder);
+        order.executions = _.concat(order.executions, _(subOrder).map(o => o.executions).flatten().value());
+        order.size = Math.abs(this.sumFilledNotionalSize(allOrders));
+        order.filledSize = Math.abs(this.sumFilledSize(allOrders));
+        order.lastUpdated = new Date();
+      } else {
+        order.status = OrderStatus.Filled;
+        order.size = Math.abs(this.sumFilledNotionalSize([order]));
+        order.filledSize = Math.abs(this.sumFilledSize([order]));
+        order.lastUpdated = new Date();
+      }
+      // Sell filled size should be equal to actual order size.
+      if (order.side === OrderSide.Sell) {
+        order.filledSize = order.size;
+      }
+      return order;
+    }).value() as OrderPair;
+  }
+
+  private sumFilledSize(orders: OrderImpl[]): number {
+    return _.round(_(orders).sumBy(o => {
+      return o.filledSize * (o.side === OrderSide.Buy
+        ? -1
+        : 1);
+    }), 8);
+  }
+
   private sumFilledNotionalSize(orders: OrderImpl[]): number {
-    return _.floor(_(orders).sumBy(o => {
+    return _.round(_(orders).sumBy(o => {
       if (o.commissionPaidByQuoted) {
         return o.filledSize * (o.side === OrderSide.Buy 
           ? -1 * (1 - o.commissionPercent / 100) / (1 + o.commissionPercent / 100) 
@@ -117,7 +157,7 @@ export default class PairTrader extends EventEmitter {
           ? -1 
           : 1);
       }
-    }), 6);
+    }), 5);
   }
 
   private async sendOrder(quote: Quote, targetVolume: number, orderType: OrderType): Promise<OrderImpl> {

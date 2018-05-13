@@ -118,13 +118,20 @@ export default class SingleLegHandler {
     try {
       this.log.info(t`SendingOrderTtl`, ttl);
       await this.brokerAdapterRouter.send(order);
-      await delay(ttl);
-      await this.brokerAdapterRouter.refresh(order);
-      if (order.filled) {
-        this.log.info(`${OrderUtil.toExecSummary(order)}`);
-      } else {
-        this.log.info(t`NotFilledTtl`, ttl);
-        await this.brokerAdapterRouter.cancel(order);
+      const retryCount = 5;
+      for (const i of _.range(1, retryCount + 1)) {
+        await delay(ttl);
+        this.log.info(t`OrderCheckAttempt`, i);
+        await this.brokerAdapterRouter.refresh(order);
+        if (order.filled) {
+          this.log.info(`${OrderUtil.toExecSummary(order)}`);
+          return;
+        }
+        if (i === retryCount) {
+          this.log.info(t`NotFilledTtl`, ttl);
+          await this.brokerAdapterRouter.cancel(order);
+          return;
+        }
       }
     } catch (ex) {
       this.log.warn(ex.message);

@@ -61,7 +61,7 @@ export default class BrokerApi {
     return await this.get<BoardState>(path);
   }
 
-  private async call<R>(path: string, method: string, body: string = ''): Promise<R> {
+  private async call<R>(path: string, method: string, body: string = '', timeout: number = 10 * 1000): Promise<R> {
     const n = nonce();
     const message = n + method + path + body;
     const sign = hmac(this.secret, message);
@@ -71,7 +71,6 @@ export default class BrokerApi {
       'ACCESS-TIMESTAMP': n,
       'ACCESS-SIGN': sign
     };
-    const timeout = 10 * 1000;
     const init = { method, headers, body, timeout };
     return await this.webClient.fetch<R>(path, init);
   }
@@ -79,7 +78,7 @@ export default class BrokerApi {
   private async post<R, T>(path: string, requestBody: T): Promise<R> {
     const method = 'POST';
     const body = JSON.stringify(requestBody);
-    return await this.call<R>(path, method, body);
+    return await this.call<R>(path, method, body, 30 * 1000);
   }
 
   private async get<R, T = never>(path: string, requestParam?: T): Promise<R> {

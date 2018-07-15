@@ -83,7 +83,7 @@ export default class BrokerAdapterImpl implements BrokerAdapter {
     if (!btcBalance) {
       throw new Error('Btc balance is not found.');
     }
-    return btcBalance.amount;
+    return btcBalance.available;
   }
 
   async fetchQuotes(): Promise<Quote[]> {

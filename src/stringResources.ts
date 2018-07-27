@@ -23,7 +23,7 @@ export const en = {
   NoBestAskWasFound: 'No best ask was found.',
   NoBestBidWasFound: 'No best bid was found.',
   OrderCheckAttempt: '>>Order check attempt %s.',
-  ProfitIs: '>>Profit is %s.',
+  ProfitIs: '>>Profit is %s (%s:%s/%s).',
   CommissionIs: '>>Commission is %s.',
   SellFillPriceIs: '>>Sell fill price is %s.',
   SellLegIsNotFilledYetPendingSizeIs: '>>Sell leg is not filled yet. Pending size is %s.',

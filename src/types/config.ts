@@ -1,5 +1,6 @@
 import { Castable, cast, element } from '@bitr/castable';
 import { CashMarginType } from './index';
+import { OrderType } from './common';
 
 export interface BrokerConfigType {
   broker: string;
@@ -62,11 +63,13 @@ export class OnSingleLegConfig extends Castable {
 export type CancelOption = {};
 
 export class ReverseOption extends Castable {
+  @cast orderType: OrderType;
   @cast limitMovePercent: number;
   @cast ttl: number;
 }
 
 export class ProceedOption extends Castable {
+  @cast orderType: OrderType;
   @cast limitMovePercent: number;
   @cast ttl: number;
 }

@@ -8,6 +8,8 @@ export interface BrokerConfigType {
   enabled: boolean;
   key: string;
   secret: string;
+  orderKey?: string;
+  orderSecret?: string;
   maxLongPosition: number;
   maxShortPosition: number;
   cashMarginType: CashMarginType;
@@ -22,6 +24,8 @@ export class BrokerConfig extends Castable implements BrokerConfigType {
   @cast enabled: boolean;
   @cast key: string;
   @cast secret: string;
+  @cast orderKey?: string;
+  @cast orderSecret?: string;
   @cast maxLongPosition: number;
   @cast maxShortPosition: number;
   @cast cashMarginType: CashMarginType;

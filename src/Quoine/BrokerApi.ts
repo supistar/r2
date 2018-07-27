@@ -72,7 +72,8 @@ export default class BrokerApi {
       'X-Quoine-API-Version': '2',
       'X-Quoine-Auth': sign
     };
-    const init = { method, headers, body };
+    const timeout = 10 * 1000;
+    const init = { method, headers, body, timeout };
     return await this.webClient.fetch<R>(path, init);
   }
 

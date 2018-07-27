@@ -26,7 +26,7 @@ export default class BrokerAdapterImpl implements BrokerAdapter {
     if (this.config.orderKey && this.config.orderSecret) {
       this.brokerOrderApi = new BrokerApi(this.config.orderKey, this.config.orderSecret);
     } else {
-      this.brokerOrderApi = new BrokerApi(this.config.key, this.config.secret);
+      this.brokerOrderApi = this.brokerApi;
     }
     this.brokerApi.on('private_request', req =>
       this.log.debug(`Sending HTTP request... URL: ${req.url} Request: ${JSON.stringify(req)}`)

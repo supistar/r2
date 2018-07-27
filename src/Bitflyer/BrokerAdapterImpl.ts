@@ -83,7 +83,7 @@ export default class BrokerAdapterImpl implements BrokerAdapter {
     if (!btcBalance) {
       throw new Error('Btc balance is not found.');
     }
-    return btcBalance.amount;
+    return btcBalance.available;
   }
 
   async fetchQuotes(): Promise<Quote[]> {
@@ -161,7 +161,7 @@ export default class BrokerAdapterImpl implements BrokerAdapter {
       order.status = OrderStatus.Canceled;
     } else if (childOrder.child_order_state === 'EXPIRED') {
       order.status = OrderStatus.Expired;
-    } else if (order.filledSize === order.size) {
+    } else if (childOrder.child_order_state === 'COMPLETED') {
       order.status = OrderStatus.Filled;
     } else if (order.filledSize > 0) {
       order.status = OrderStatus.PartiallyFilled;

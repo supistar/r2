@@ -15,7 +15,7 @@ import { getLogger } from '@bitr/logger';
 import * as _ from 'lodash';
 import BrokerApi from './BrokerApi';
 import { ChildOrdersParam, SendChildOrderRequest, ChildOrder, BoardResponse } from './types';
-import { eRound, toExecution } from '../util';
+import { eRound, toExecution, calculateOrderSize } from '../util';
 
 export default class BrokerAdapterImpl implements BrokerAdapter {
   private readonly brokerApi: BrokerApi;
@@ -130,6 +130,18 @@ export default class BrokerAdapterImpl implements BrokerAdapter {
         throw new Error('Not implemented.');
     }
 
+    let targetSize = 0;
+    switch (order.side) {
+      case OrderSide.Buy:
+        targetSize = calculateOrderSize(order);
+        break;
+      case OrderSide.Sell:
+        targetSize = order.size;
+        break;
+      default:
+        throw new Error('Not implemented.');
+    }
+
     let timeInForce;
     switch (order.timeInForce) {
       case TimeInForce.None:
@@ -150,7 +162,7 @@ export default class BrokerAdapterImpl implements BrokerAdapter {
       product_code: productCode,
       child_order_type: childOrderType,
       side: OrderSide[order.side].toUpperCase(),
-      size: order.size,
+      size: targetSize,
       time_in_force: timeInForce
     };
   }

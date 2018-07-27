@@ -70,7 +70,11 @@ export default class SpreadAnalyzer {
 
     const invertedSpread = bid.price - ask.price;
     const availableVolume = _.floor(_.min([bid.volume, ask.volume]) as number, LOT_MIN_DECIMAL_PLACE);
-    const allowedShortSize = positionMap[bid.broker].allowedShortSize;
+    let allowedShortSize = positionMap[bid.broker].allowedShortSize;
+    const bidBrokerConfig = findBrokerConfig(this.configStore.config, bid.broker);
+    if (bidBrokerConfig.commissionPaidByQuoted) {
+      allowedShortSize = allowedShortSize / (1 + bidBrokerConfig.commissionPercent / 100);
+    }
     const allowedLongSize = positionMap[ask.broker].allowedLongSize;
     let targetVolume = _.min([availableVolume, config.maxSize, allowedShortSize, allowedLongSize]) as number;
     targetVolume = _.floor(targetVolume, LOT_MIN_DECIMAL_PLACE);
@@ -151,7 +155,14 @@ export default class SpreadAnalyzer {
   }
 
   private getBest(quotes: Quote[]) {
-    const ordered = _.orderBy(quotes, ['price']);
+    const config = this.configStore.config;
+    const ordered = _.orderBy(quotes, o => {
+      if (o.side === QuoteSide.Ask) {
+        return o.price * (1 + findBrokerConfig(config, o.broker).commissionPercent / 100);
+      } else {
+        return o.price / (1 + findBrokerConfig(config, o.broker).commissionPercent / 100);
+      }
+    });
     const ask = _(ordered)
       .filter(q => q.side === QuoteSide.Ask)
       .first();
@@ -162,7 +173,14 @@ export default class SpreadAnalyzer {
   }
 
   private getWorst(quotes: Quote[]) {
-    const ordered = _.orderBy(quotes, ['price']);
+    const config = this.configStore.config;
+    const ordered = _.orderBy(quotes, o => {
+      if (o.side === QuoteSide.Ask) {
+        return o.price * (1 + findBrokerConfig(config, o.broker).commissionPercent / 100);
+      } else {
+        return o.price / (1 + findBrokerConfig(config, o.broker).commissionPercent / 100);
+      }
+    });
     const ask = _(ordered)
       .filter(q => q.side === QuoteSide.Ask)
       .last();

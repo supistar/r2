@@ -1,5 +1,4 @@
 import { OnSingleLegConfig, ReverseOption, ProceedOption, OrderSide, OrderType, OrderPair, ConfigStore } from './types';
-import { LOT_MIN_DECIMAL_PLACE } from './constants';
 import OrderImpl from './OrderImpl';
 import * as _ from 'lodash';
 import { getLogger } from '@bitr/logger';
@@ -48,7 +47,7 @@ export default class SingleLegHandler {
     const largeLeg = orders[0].filledSize <= orders[1].filledSize ? orders[1] : orders[0];
     const sign = largeLeg.side === OrderSide.Buy ? -1 : 1;
     const price = _.round(largeLeg.price * (1 + sign * options.limitMovePercent / 100));
-    const size = _.floor(largeLeg.filledSize - smallLeg.filledSize, LOT_MIN_DECIMAL_PLACE);
+    const size = this.calculateReverseTargetSize(largeLeg, smallLeg);
     const { baseCcy } = splitSymbol(this.symbol);
     this.log.info(t`ReverseFilledLeg`, OrderUtil.toShortString(largeLeg), price.toLocaleString(), size, baseCcy);
     const reversalOrder = new OrderImpl({
@@ -59,7 +58,9 @@ export default class SingleLegHandler {
       price,
       cashMarginType: largeLeg.cashMarginType,
       type: OrderType.Limit,
-      leverageLevel: largeLeg.leverageLevel
+      leverageLevel: largeLeg.leverageLevel,
+      commissionPercent: largeLeg.commissionPercent,
+      commissionPaidByQuoted: largeLeg.commissionPaidByQuoted
     });
     await this.sendOrderWithTtl(reversalOrder, options.ttl);
     return [reversalOrder];
@@ -70,7 +71,7 @@ export default class SingleLegHandler {
     const largeLeg = orders[0].filledSize <= orders[1].filledSize ? orders[1] : orders[0];
     const sign = smallLeg.side === OrderSide.Buy ? 1 : -1;
     const price = _.round(smallLeg.price * (1 + sign * options.limitMovePercent / 100));
-    const size = _.floor(smallLeg.pendingSize - largeLeg.pendingSize, LOT_MIN_DECIMAL_PLACE);
+    const size = this.calculateProceedTargetSize(smallLeg, largeLeg);
     const { baseCcy } = splitSymbol(this.symbol);
     this.log.info(t`ExecuteUnfilledLeg`, OrderUtil.toShortString(smallLeg), price.toLocaleString(), size, baseCcy);
     const proceedOrder = new OrderImpl({
@@ -81,10 +82,36 @@ export default class SingleLegHandler {
       price,
       cashMarginType: smallLeg.cashMarginType,
       type: OrderType.Limit,
-      leverageLevel: smallLeg.leverageLevel
+      leverageLevel: smallLeg.leverageLevel,
+      commissionPercent: smallLeg.commissionPercent,
+      commissionPaidByQuoted: smallLeg.commissionPaidByQuoted
     });
     await this.sendOrderWithTtl(proceedOrder, options.ttl);
     return [proceedOrder];
+  }
+
+  private calculateReverseTargetSize(leftLeg: OrderImpl, rightLeg: OrderImpl): number {
+    let leftSize = leftLeg.filledSize;
+    let rightSize = rightLeg.filledSize;
+    if (leftLeg.commissionPaidByQuoted) {
+      leftSize = leftSize / (1 - leftLeg.commissionPercent / 100);
+    }
+    if (rightLeg.commissionPaidByQuoted) {
+      rightSize = rightSize / (1 - rightLeg.commissionPercent / 100);
+    }
+    return _.floor(leftSize - rightSize, 8);
+  }
+
+  private calculateProceedTargetSize(leftLeg: OrderImpl, rightLeg: OrderImpl): number {
+    let leftSize = leftLeg.pendingSize;
+    let rightSize = rightLeg.pendingSize;
+    if (leftLeg.commissionPaidByQuoted) {
+      leftSize = leftSize / (1 - leftLeg.commissionPercent / 100);
+    }
+    if (rightLeg.commissionPaidByQuoted) {
+      rightSize = rightSize / (1 - rightLeg.commissionPercent / 100);
+    }
+    return _.floor(leftSize - rightSize, 8);
   }
 
   private async sendOrderWithTtl(order: OrderImpl, ttl: number) {

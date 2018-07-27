@@ -104,3 +104,11 @@ export function formatQuote(quote: Quote) {
     `${padStart(quote.price.toLocaleString(), 7)} ${_.round(quote.volume, 3)}`
   );
 }
+
+export function calculateOrderSize(order: Order): number {
+  if (order.commissionPaidByQuoted) {
+    return _.floor(order.size * (1 + order.commissionPercent / 100) / (1 - order.commissionPercent / 100), 8);
+  } else {
+    return order.size;
+  }
+}

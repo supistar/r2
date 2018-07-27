@@ -12,6 +12,8 @@ export interface OrderInit {
   cashMarginType: CashMarginType;
   type: OrderType;
   leverageLevel: number;
+  commissionPercent: number;
+  commissionPaidByQuoted: boolean;
 }
 
 export default class OrderImpl implements Order {
@@ -26,6 +28,8 @@ export default class OrderImpl implements Order {
   cashMarginType: CashMarginType;
   type: OrderType;
   leverageLevel: number;
+  commissionPercent: number;
+  commissionPaidByQuoted: boolean;
   id: string = uuid();
   symbol: string;
   timeInForce: TimeInForce = TimeInForce.None;
@@ -42,17 +46,25 @@ export default class OrderImpl implements Order {
   }
 
   get averageFilledPrice(): number {
-    return _.isEmpty(this.executions)
+    // If executions is empty, returns 0.
+    const executedSumSize = _.sumBy(this.executions, x => x.size);
+    return executedSumSize === 0
       ? 0
-      : eRound(_.sumBy(this.executions, x => x.size * x.price) / _.sumBy(this.executions, x => x.size));
+      : eRound(_.sumBy(this.executions, x => x.size * x.price) / executedSumSize);
   }
 
   get filled(): boolean {
     return this.status === OrderStatus.Filled;
   }
 
+  get filledNotionalSize(): number {
+    return (this.commissionPaidByQuoted && this.side === OrderSide.Buy)
+      ? eRound(this.filledSize * (1 - this.commissionPercent / 100) / (1 + this.commissionPercent / 100))
+      : this.filledSize;
+  }
+
   get filledNotional(): number {
-    return this.averageFilledPrice * this.filledSize;
+    return this.averageFilledPrice * this.filledNotionalSize;
   }
 }
 

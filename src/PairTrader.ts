@@ -10,7 +10,8 @@ import {
   OrderSide,
   ActivePairStore,
   Quote,
-  OrderPair
+  OrderPair,
+  OrderStatus
 } from './types';
 import t from './intl';
 import { delay, formatQuote } from './util';
@@ -85,16 +86,78 @@ export default class PairTrader extends EventEmitter {
         await Promise.all(cancelTasks);
         if (
           orders.some(o => !o.filled) &&
-          _(orders).sumBy(o => o.filledSize * (o.side === OrderSide.Buy ? -1 : 1)) !== 0
+          this.sumFilledNotionalSize(orders) !== 0
         ) {
           const subOrders = await this.singleLegHandler.handle(orders as OrderPair, closable);
           if (subOrders.length !== 0 && subOrders.every(o => o.filled)) {
-            this.printProfit(_.concat(orders, subOrders), closable);
+            const allOrders = _.concat(orders, subOrders);
+            this.printProfit(allOrders, closable);
+            const minOrderSize = 0.005;
+            const enoughTotalSize = this.sumFilledNotionalSize(allOrders) < minOrderSize;
+            const broker0Size = this.sumFilledNotionalSize(
+              _(allOrders).filter(x => x.broker === orders[0].broker).value()
+            );
+            const broker1Size = this.sumFilledNotionalSize(
+              _(allOrders).filter(x => x.broker === orders[1].broker).value()
+            );
+            this.log.debug(`Single leg amount : ${enoughTotalSize}/${broker0Size}/${broker1Size}`);
+            if (!closable && enoughTotalSize && broker0Size !== 0 && broker1Size !== 0) {
+              const mergeOrders = this.mergeOrderPair(orders as OrderPair, subOrders);
+              this.log.debug(`Putting pair for single leg ${JSON.stringify(mergeOrders)}.`);
+              await this.activePairStore.put(mergeOrders as OrderPair);
+            }
           }
         }
         break;
       }
     }
+  }
+
+  private mergeOrderPair(orders: OrderPair, subOrders: OrderImpl[]): OrderPair {
+    return _(orders as OrderImpl[]).map(order => {
+      const subOrder = _(subOrders).filter(o => o.broker === order.broker).value();
+
+      if (subOrder.length > 0 && subOrder.every(o => o.filled)) {
+        order.status = OrderStatus.Filled;
+        const allOrders = _.concat(order, subOrder);
+        order.executions = _.concat(order.executions, _(subOrder).map(o => o.executions).flatten().value());
+        order.size = Math.abs(this.sumFilledNotionalSize(allOrders));
+        order.filledSize = Math.abs(this.sumFilledSize(allOrders));
+        order.lastUpdated = new Date();
+      } else {
+        order.status = OrderStatus.Filled;
+        order.size = Math.abs(this.sumFilledNotionalSize([order]));
+        order.filledSize = Math.abs(this.sumFilledSize([order]));
+        order.lastUpdated = new Date();
+      }
+      // Sell filled size should be equal to actual order size.
+      if (order.side === OrderSide.Sell) {
+        order.filledSize = order.size;
+      }
+      return order;
+    }).value() as OrderPair;
+  }
+
+  private sumFilledSize(orders: OrderImpl[]): number {
+    return _.round(_(orders).sumBy(o => {
+      return o.filledSize * (o.side === OrderSide.Buy
+        ? -1
+        : 1);
+    }), 8);
+  }
+
+  private sumFilledNotionalSize(orders: OrderImpl[]): number {
+    return _.round(_(orders).sumBy(o => {
+      if (o.commissionPaidByQuoted) {
+        return o.filledSize * (o.side === OrderSide.Buy 
+          ? -1 * (1 - o.commissionPercent / 100) / (1 + o.commissionPercent / 100) 
+          : 1);
+      } else {
+        return o.filledSize * (o.side === OrderSide.Buy 
+          ? -1 
+          : 1);
+      }
+    }), 5);
   }
 
   private async sendOrder(quote: Quote, targetVolume: number, orderType: OrderType): Promise<OrderImpl> {

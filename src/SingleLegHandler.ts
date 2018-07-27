@@ -93,11 +93,11 @@ export default class SingleLegHandler {
   private calculateReverseTargetSize(leftLeg: OrderImpl, rightLeg: OrderImpl): number {
     let leftSize = leftLeg.filledSize;
     let rightSize = rightLeg.filledSize;
-    if (leftLeg.commissionPaidByQuoted) {
-      leftSize = leftSize / (1 - leftLeg.commissionPercent / 100);
+    if (leftLeg.commissionPaidByQuoted && leftLeg.side === OrderSide.Buy) {
+      leftSize = leftSize * (1 - leftLeg.commissionPercent / 100) / (1 + leftLeg.commissionPercent / 100);
     }
-    if (rightLeg.commissionPaidByQuoted) {
-      rightSize = rightSize / (1 - rightLeg.commissionPercent / 100);
+    if (rightLeg.commissionPaidByQuoted && rightLeg.side === OrderSide.Buy) {
+      rightSize = rightSize * (1 - rightLeg.commissionPercent / 100) / (1 + rightLeg.commissionPercent / 100);
     }
     return _.floor(leftSize - rightSize, 8);
   }
@@ -105,11 +105,11 @@ export default class SingleLegHandler {
   private calculateProceedTargetSize(leftLeg: OrderImpl, rightLeg: OrderImpl): number {
     let leftSize = leftLeg.pendingSize;
     let rightSize = rightLeg.pendingSize;
-    if (leftLeg.commissionPaidByQuoted) {
-      leftSize = leftSize / (1 - leftLeg.commissionPercent / 100);
+    if (leftLeg.commissionPaidByQuoted && leftLeg.side === OrderSide.Buy) {
+      leftSize = leftSize * (1 - leftLeg.commissionPercent / 100) / (1 + leftLeg.commissionPercent / 100);
     }
-    if (rightLeg.commissionPaidByQuoted) {
-      rightSize = rightSize / (1 - rightLeg.commissionPercent / 100);
+    if (rightLeg.commissionPaidByQuoted && rightLeg.side === OrderSide.Buy) {
+      rightSize = rightSize * (1 - rightLeg.commissionPercent / 100) / (1 + rightLeg.commissionPercent / 100);
     }
     return _.floor(leftSize - rightSize, 8);
   }
@@ -118,13 +118,20 @@ export default class SingleLegHandler {
     try {
       this.log.info(t`SendingOrderTtl`, ttl);
       await this.brokerAdapterRouter.send(order);
-      await delay(ttl);
-      await this.brokerAdapterRouter.refresh(order);
-      if (order.filled) {
-        this.log.info(`${OrderUtil.toExecSummary(order)}`);
-      } else {
-        this.log.info(t`NotFilledTtl`, ttl);
-        await this.brokerAdapterRouter.cancel(order);
+      const retryCount = 5;
+      for (const i of _.range(1, retryCount + 1)) {
+        await delay(ttl);
+        this.log.info(t`OrderCheckAttempt`, i);
+        await this.brokerAdapterRouter.refresh(order);
+        if (order.filled) {
+          this.log.info(`${OrderUtil.toExecSummary(order)}`);
+          return;
+        }
+        if (i === retryCount) {
+          this.log.info(t`NotFilledTtl`, ttl);
+          await this.brokerAdapterRouter.cancel(order);
+          return;
+        }
       }
     } catch (ex) {
       this.log.warn(ex.message);

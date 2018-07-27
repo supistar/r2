@@ -6,14 +6,14 @@ import * as _ from 'lodash';
 import { calculateCoincheckOrderPrice } from './util';
 
 export default class NetOutStrategy implements CashMarginTypeStrategy {
-  constructor(private readonly brokerApi: BrokerApi) {}
+  constructor(private readonly brokerApi: BrokerApi, private readonly brokerOrderApi: BrokerApi) {}
 
   async send(order: Order): Promise<void> {
     if (order.cashMarginType !== CashMarginType.NetOut) {
       throw new Error();
     }
     const request = await this.getNetOutRequest(order);
-    const reply = await this.brokerApi.newOrder(request);
+    const reply = await this.brokerOrderApi.newOrder(request);
     if (!reply.success) {
       throw new Error('Send failed.');
     }

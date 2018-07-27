@@ -1,6 +1,7 @@
 import { CashMarginTypeStrategy } from './types';
 import BrokerApi from './BrokerApi';
-import { Order, OrderStatus, OrderSide, OrderType, CashMarginType } from '../types';
+import { CashMarginType, Order, OrderSide, OrderStatus } from '../types';
+import { calculateCoincheckOrderPrice } from './util';
 
 export default class CashStrategy implements CashMarginTypeStrategy {
   constructor(private readonly brokerApi: BrokerApi) {}
@@ -13,7 +14,7 @@ export default class CashStrategy implements CashMarginTypeStrategy {
       pair: 'btc_jpy',
       order_type: this.getBrokerOrderType(order),
       amount: order.size,
-      rate: order.price
+      rate: calculateCoincheckOrderPrice(order)
     };
     const reply = await this.brokerApi.newOrder(request);
     if (!reply.success) {
@@ -32,23 +33,9 @@ export default class CashStrategy implements CashMarginTypeStrategy {
   private getBrokerOrderType(order: Order): string {
     switch (order.side) {
       case OrderSide.Buy:
-        switch (order.type) {
-          case OrderType.Market:
-            return 'market_buy';
-          case OrderType.Limit:
-            return 'buy';
-          default:
-            throw new Error();
-        }
+        return 'buy';
       case OrderSide.Sell:
-        switch (order.type) {
-          case OrderType.Market:
-            return 'market_sell';
-          case OrderType.Limit:
-            return 'sell';
-          default:
-            throw new Error();
-        }
+        return 'sell';
       default:
         throw new Error();
     }

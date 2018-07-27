@@ -1,8 +1,9 @@
-import { CashMarginTypeStrategy, NewOrderRequest, LeveragePosition } from './types';
+import { CashMarginTypeStrategy, LeveragePosition, NewOrderRequest } from './types';
 import BrokerApi from './BrokerApi';
-import { Order, OrderStatus, OrderSide, CashMarginType, OrderType } from '../types';
-import { eRound, almostEqual } from '../util';
+import { CashMarginType, Order, OrderSide, OrderStatus } from '../types';
+import { almostEqual, eRound } from '../util';
 import * as _ from 'lodash';
+import { calculateCoincheckOrderPrice } from './util';
 
 export default class NetOutStrategy implements CashMarginTypeStrategy {
   constructor(private readonly brokerApi: BrokerApi) {}
@@ -40,7 +41,7 @@ export default class NetOutStrategy implements CashMarginTypeStrategy {
       throw new Error('Not supported');
     }
     const pair = 'btc_jpy';
-    const rate = order.type === OrderType.Market ? undefined : order.price;
+    const rate = calculateCoincheckOrderPrice(order);
     const request = { pair, rate };
     if (candidates.length === 0) {
       return {

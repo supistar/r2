@@ -4,7 +4,7 @@ import { CashMarginType, Order, OrderSide, OrderStatus } from '../types';
 import { calculateCoincheckOrderPrice } from './util';
 
 export default class CashStrategy implements CashMarginTypeStrategy {
-  constructor(private readonly brokerApi: BrokerApi) {}
+  constructor(private readonly brokerApi: BrokerApi, private readonly brokerOrderApi: BrokerApi) {}
 
   async send(order: Order): Promise<void> {
     if (order.cashMarginType !== CashMarginType.Cash) {
@@ -16,7 +16,7 @@ export default class CashStrategy implements CashMarginTypeStrategy {
       amount: order.size,
       rate: calculateCoincheckOrderPrice(order)
     };
-    const reply = await this.brokerApi.newOrder(request);
+    const reply = await this.brokerOrderApi.newOrder(request);
     if (!reply.success) {
       throw new Error('Send failed.');
     }

@@ -18,14 +18,26 @@ import { eRound } from '../util';
 export default class BrokerAdapterImpl implements BrokerAdapter {
   private readonly log = getLogger('Bitbankcc.BrokerAdapter');
   private readonly brokerApi: BrokerApi;
+  private readonly brokerOrderApi: BrokerApi;
   readonly broker = 'Bitbankcc';
 
   constructor(private readonly config: BrokerConfigType) {
     this.brokerApi = new BrokerApi(this.config.key, this.config.secret);
+    if (this.config.orderKey && this.config.orderSecret) {
+      this.brokerOrderApi = new BrokerApi(this.config.orderKey, this.config.orderSecret);
+    } else {
+      this.brokerOrderApi = this.brokerApi;
+    }
     this.brokerApi.on('private_request', req =>
       this.log.debug(`Sending HTTP request... URL: ${req.url} Request: ${JSON.stringify(req)}`)
     );
+    this.brokerOrderApi.on('private_request', req =>
+      this.log.debug(`Sending HTTP request... URL: ${req.url} Request: ${JSON.stringify(req)}`)
+    );
     this.brokerApi.on('private_response', (response, request) =>
+      this.log.debug(`Response from ${request.url}. Content: ${JSON.stringify(response)}`)
+    );
+    this.brokerOrderApi.on('private_response', (response, request) =>
       this.log.debug(`Response from ${request.url}. Content: ${JSON.stringify(response)}`)
     );
   }
@@ -35,7 +47,7 @@ export default class BrokerAdapterImpl implements BrokerAdapter {
       throw new Error();
     }
     const request = this.mapOrderToSendOrderRequest(order);
-    const reply = await this.brokerApi.sendOrder(request);
+    const reply = await this.brokerOrderApi.sendOrder(request);
     order.brokerOrderId = String(reply.order_id);
     order.status = OrderStatus.New;
     order.sentTime = new Date();
@@ -80,7 +92,7 @@ export default class BrokerAdapterImpl implements BrokerAdapter {
 
   async cancel(order: Order): Promise<void> {
     const pair = this.mapSymbolToPair(order.symbol);
-    await this.brokerApi.cancelOrder({ pair, order_id: Number(order.brokerOrderId) });
+    await this.brokerOrderApi.cancelOrder({ pair, order_id: Number(order.brokerOrderId) });
     order.lastUpdated = new Date();
     order.status = OrderStatus.Canceled;
   }

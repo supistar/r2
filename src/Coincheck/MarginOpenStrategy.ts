@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import { calculateCoincheckOrderPrice } from './util';
 
 export default class MarginOpenStrategy implements CashMarginTypeStrategy {
-  constructor(private readonly brokerApi: BrokerApi) {}
+  constructor(private readonly brokerApi: BrokerApi, private readonly brokerOrderApi: BrokerApi) {}
 
   async send(order: Order): Promise<void> {
     if (order.cashMarginType !== CashMarginType.MarginOpen) {
@@ -18,7 +18,7 @@ export default class MarginOpenStrategy implements CashMarginTypeStrategy {
       amount: order.size,
       rate: calculateCoincheckOrderPrice(order)
     };
-    const reply = await this.brokerApi.newOrder(request);
+    const reply = await this.brokerOrderApi.newOrder(request);
     if (!reply.success) {
       throw new Error('Send failed.');
     }

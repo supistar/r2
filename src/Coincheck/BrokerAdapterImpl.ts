@@ -20,16 +20,22 @@ import NetOutStrategy from './NetOutStrategy';
 
 export default class BrokerAdapterImpl implements BrokerAdapter {
   private readonly brokerApi: BrokerApi;
+  private readonly brokerOrderApi: BrokerApi;
   private readonly log = getLogger('Coincheck.BrokerAdapter');
   readonly broker = 'Coincheck';
   readonly strategyMap: Map<CashMarginType, CashMarginTypeStrategy>;
 
   constructor(private readonly config: BrokerConfigType) {
     this.brokerApi = new BrokerApi(this.config.key, this.config.secret);
+    if (this.config.orderKey && this.config.orderSecret) {
+      this.brokerOrderApi = new BrokerApi(this.config.orderKey, this.config.orderSecret);
+    } else {
+      this.brokerOrderApi = this.brokerApi;
+    }
     this.strategyMap = new Map<CashMarginType, CashMarginTypeStrategy>([
-      [CashMarginType.Cash, new CashStrategy(this.brokerApi)],
-      [CashMarginType.MarginOpen, new MarginOpenStrategy(this.brokerApi)],
-      [CashMarginType.NetOut, new NetOutStrategy(this.brokerApi)]
+      [CashMarginType.Cash, new CashStrategy(this.brokerApi, this.brokerOrderApi)],
+      [CashMarginType.MarginOpen, new MarginOpenStrategy(this.brokerApi, this.brokerOrderApi)],
+      [CashMarginType.NetOut, new NetOutStrategy(this.brokerApi, this.brokerOrderApi)]
     ]);
   }
 
@@ -71,7 +77,7 @@ export default class BrokerAdapterImpl implements BrokerAdapter {
 
   async cancel(order: Order): Promise<void> {
     const orderId = order.brokerOrderId;
-    const reply = await this.brokerApi.cancelOrder(orderId);
+    const reply = await this.brokerOrderApi.cancelOrder(orderId);
     if (!reply.success) {
       throw new Error(`Cancel ${orderId} failed.`);
     }

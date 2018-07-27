@@ -78,7 +78,9 @@ export default class SpreadAnalyzer {
     const allowedLongSize = positionMap[ask.broker].allowedLongSize;
     let targetVolume = _.min([availableVolume, config.maxSize, allowedShortSize, allowedLongSize]) as number;
     targetVolume = _.floor(targetVolume, LOT_MIN_DECIMAL_PLACE);
+    let targetSatisfied = false;
     if (closingPair) {
+      targetSatisfied = targetVolume >= closingPair[0].size;
       targetVolume = closingPair[0].size;
     }
     const commission = this.calculateTotalCommission([bid, ask], targetVolume);
@@ -92,7 +94,8 @@ export default class SpreadAnalyzer {
       availableVolume,
       targetVolume,
       targetProfit,
-      profitPercentAgainstNotional
+      profitPercentAgainstNotional,
+      targetSatisfied
     };
     this.log.debug(`Analysis done. Result: ${JSON.stringify(spreadAnalysisResult)}`);
     return spreadAnalysisResult;

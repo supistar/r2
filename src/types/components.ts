@@ -28,6 +28,7 @@ export interface SpreadAnalysisResult {
   targetVolume: number;
   targetProfit: number;
   profitPercentAgainstNotional: number;
+  targetSatisfied?: boolean;
 }
 
 export interface PairSummary {

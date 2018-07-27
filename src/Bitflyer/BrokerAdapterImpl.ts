@@ -88,7 +88,17 @@ export default class BrokerAdapterImpl implements BrokerAdapter {
 
   async fetchQuotes(): Promise<Quote[]> {
     const response = await this.brokerApi.getBoard();
-    return this.mapToQuote(response);
+    const state = await this.brokerApi.getBoardState();
+    const health = state['health'];
+    const message = `Broker health is bad: current state=${health}.`;
+    switch (health) {
+      case 'NORMAL':
+        return this.mapToQuote(response);
+      case 'BUSY':
+        return this.mapToQuote(response);
+      default:
+        throw new Error(message);
+    }
   }
 
   private mapOrderToSendChildOrderRequest(order: Order): SendChildOrderRequest {

@@ -13,7 +13,8 @@ import {
   BalanceResponse,
   BoardResponse,
   ChildOrder,
-  Balance
+  Balance,
+  BoardState
 } from './types';
 
 export default class BrokerApi {
@@ -55,6 +56,11 @@ export default class BrokerApi {
     return new BoardResponse(await this.webClient.fetch<BoardResponse>(path, undefined, false));
   }
 
+  async getBoardState(): Promise<BoardState> {
+    const path = '/v1/getboardstate?product_code=BTC_JPY';
+    return await this.get<BoardState>(path);
+  }
+
   private async call<R>(path: string, method: string, body: string = ''): Promise<R> {
     const n = nonce();
     const message = n + method + path + body;
@@ -65,7 +71,8 @@ export default class BrokerApi {
       'ACCESS-TIMESTAMP': n,
       'ACCESS-SIGN': sign
     };
-    const init = { method, headers, body };
+    const timeout = 10 * 1000;
+    const init = { method, headers, body, timeout };
     return await this.webClient.fetch<R>(path, init);
   }
 

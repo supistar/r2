@@ -3,6 +3,7 @@ import BrokerApi from './BrokerApi';
 import { Order, OrderStatus, OrderSide, CashMarginType } from '../types';
 import { eRound } from '../util';
 import * as _ from 'lodash';
+import { calculateCoincheckOrderPrice } from './util';
 
 export default class MarginOpenStrategy implements CashMarginTypeStrategy {
   constructor(private readonly brokerApi: BrokerApi) {}
@@ -15,7 +16,7 @@ export default class MarginOpenStrategy implements CashMarginTypeStrategy {
       pair: 'btc_jpy',
       order_type: this.getBrokerOrderType(order),
       amount: order.size,
-      rate: order.price
+      rate: calculateCoincheckOrderPrice(order)
     };
     const reply = await this.brokerApi.newOrder(request);
     if (!reply.success) {

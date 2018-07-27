@@ -93,7 +93,7 @@ export default class BrokerAdapterImpl implements BrokerAdapter {
       order.lastUpdated = new Date();
       return;
     }
-    const from = addMinutes(order.creationTime, -1);
+    const from = addMinutes(order.creationTime, -2);
     const transactions = (await this.brokerApi.getTransactionsWithStartDate(from)).filter(
       x => x.order_id === order.brokerOrderId
     );

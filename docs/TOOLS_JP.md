@@ -38,10 +38,10 @@ npm run closeCcPosition
 npm run closeBfPosition
 ```
 
-## closeQuPosition - Liquidの全レバレッジポジションを成行注文でクローズ
+## closeLiPosition - Liquidの全レバレッジポジションを成行注文でクローズ
 
 ```bash
-npm run closeQuPosition
+npm run closeLiPosition
 ```
 
 ## clearPairs - R2が保持しているオープンペア情報をクリアする(取引は送信されません)

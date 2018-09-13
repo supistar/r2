@@ -38,10 +38,10 @@ npm run closeCcPosition
 npm run closeBfPosition
 ```
 
-## closeQuPosition - close all leverage positions by market orders in Liquid
+## closeLiPosition - close all leverage positions by market orders in Liquid
 
 ```bash
-npm run closeQuPosition
+npm run closeLiPosition
 ```
 
 ## clearPairs - clear open pair data in R2 internal database. This doesn't send any orders.

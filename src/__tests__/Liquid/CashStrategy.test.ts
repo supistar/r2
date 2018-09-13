@@ -1,11 +1,11 @@
-import CashStrategy from '../../Quoine/CashStrategy';
-import BrokerApi from '../../Quoine/BrokerApi';
+import CashStrategy from '../../Liquid/CashStrategy';
+import BrokerApi from '../../Liquid/BrokerApi';
 import nocksetup from './nocksetup';
 import * as nock from 'nock';
 import { options } from '@bitr/logger';
 options.enabled = false;
 
-describe('Quoine.CashStrategy', () => {
+describe('Liquid.CashStrategy', () => {
   beforeAll(() => {
     nocksetup();
   });

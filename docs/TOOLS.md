@@ -21,9 +21,9 @@ Coincheck, BTC, Cash, 0.123
 Coincheck, JPY, Margin, 200000
 Coincheck, JPY, Free Margin, 123456
 Coincheck, BTC, Leverage Position, 3.456
-Quoine, JPY, Margin, 300000
-Quoine, JPY, Free Margin, 123456
-Quoine, BTC, Leverage Position, 0.01
+Liquid, JPY, Margin, 300000
+Liquid, JPY, Free Margin, 123456
+Liquid, BTC, Leverage Position, 0.01
 ```
 
 ## closeCcPosition - close all leverage positions by market orders in Coincheck
@@ -38,7 +38,7 @@ npm run closeCcPosition
 npm run closeBfPosition
 ```
 
-## closeQuPosition - close all leverage positions by market orders in Quoine
+## closeQuPosition - close all leverage positions by market orders in Liquid
 
 ```bash
 npm run closeQuPosition

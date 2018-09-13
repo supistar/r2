@@ -2,7 +2,7 @@
 // tslint:disable:max-line-length
 import * as nock from 'nock';
 import * as _ from 'lodash';
-import BrokerApi from '../../Quoine/BrokerApi';
+import BrokerApi from '../../Liquid/BrokerApi';
 import nocksetup from './nocksetup';
 import { options } from '@bitr/logger';
 options.enabled = false;
@@ -12,7 +12,7 @@ nocksetup();
 const key = 'key';
 const secret = 'secret';
 
-describe('Quoine BrokerApi', () => {
+describe('Liquid BrokerApi', () => {
   test('sendOrder', async () => {
     const target = new BrokerApi(key, secret);
     const request = { order: { price: 783000, product_id: '5', order_direction: 'netout', order_type: 'limit', side: 'buy', quantity: 0.01, leverage_level: 10 } };

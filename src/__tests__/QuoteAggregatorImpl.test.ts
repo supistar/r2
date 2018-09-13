@@ -17,7 +17,7 @@ const config = {
       enabled: true
     },
     {
-      broker: 'Quoine',
+      broker: 'Liquid',
       enabled: true,
       maxLongPosition: 0.3,
       maxShortPosition: 0.3
@@ -51,11 +51,11 @@ describe('Quote Aggregator', () => {
           { broker: 'Coincheck', side: QuoteSide.Bid, price: 490000, volume: 0.2 }
         ])
     };
-    const quoineBa = {
-      broker: 'Quoine',
+    const liquidBa = {
+      broker: 'Liquid',
       fetchQuotes: () => Promise.resolve([])
     };
-    const baList = [bitflyerBa, coincheckBa, quoineBa];
+    const baList = [bitflyerBa, coincheckBa, liquidBa];
     const baRouter = new BrokerAdapterRouter(baList);
     const aggregator: QuoteAggregator = new QuoteAggregator(configStore, baRouter);
     const mustBeCalled = jest.fn();
@@ -102,11 +102,11 @@ describe('Quote Aggregator', () => {
           { broker: 'Coincheck', side: QuoteSide.Bid, price: 490000, volume: 0.2 }
         ])
     };
-    const quoineBa = {
-      broker: 'Quoine',
+    const liquidBa = {
+      broker: 'Liquid',
       fetchQuotes: () => Promise.resolve([])
     };
-    const baList = [bitflyerBa, coincheckBa, quoineBa];
+    const baList = [bitflyerBa, coincheckBa, liquidBa];
     const baRouter = new BrokerAdapterRouter(baList);
     const aggregator: QuoteAggregator = new QuoteAggregator(configStore, baRouter);
     const mustBeCalled = jest.fn();
@@ -144,11 +144,11 @@ describe('Quote Aggregator', () => {
           { broker: 'Coincheck', side: QuoteSide.Bid, price: 490000, volume: 0.2 }
         ])
     };
-    const quoineBa = {
-      broker: 'Quoine',
+    const liquidBa = {
+      broker: 'Liquid',
       fetchQuotes: () => Promise.resolve([])
     };
-    const baList = [bitflyerBa, coincheckBa, quoineBa];
+    const baList = [bitflyerBa, coincheckBa, liquidBa];
     const baRouter = new BrokerAdapterRouter(baList);
     const aggregator: QuoteAggregator = new QuoteAggregator(configStore, baRouter);
     const mustBeCalled = jest.fn();
@@ -181,11 +181,11 @@ describe('Quote Aggregator', () => {
           { broker: 'Coincheck', side: QuoteSide.Bid, price: 490000, volume: 0.2 }
         ])
     };
-    const quoineBa = {
-      broker: 'Quoine',
+    const liquidBa = {
+      broker: 'Liquid',
       fetchQuotes: () => Promise.resolve([])
     };
-    const baList = [bitflyerBa, coincheckBa, quoineBa];
+    const baList = [bitflyerBa, coincheckBa, liquidBa];
     const baRouter = new BrokerAdapterRouter(baList);
     const aggregator: QuoteAggregator = new QuoteAggregator(configStore, baRouter);
     const mustBeCalled = jest.fn();
@@ -218,11 +218,11 @@ describe('Quote Aggregator', () => {
           { broker: 'Coincheck', side: QuoteSide.Bid, price: 490000, volume: 0.2 }
         ])
     };
-    const quoineBa = {
-      broker: 'Quoine',
+    const liquidBa = {
+      broker: 'Liquid',
       fetchQuotes: () => Promise.resolve([])
     };
-    const baList = [bitflyerBa, coincheckBa, quoineBa];
+    const baList = [bitflyerBa, coincheckBa, liquidBa];
     const baRouter = new BrokerAdapterRouter(baList);
     const aggregator: QuoteAggregator = new QuoteAggregator(configStore, baRouter);
     const mustBeCalled = jest.fn();
@@ -246,15 +246,15 @@ describe('Quote Aggregator', () => {
           { broker: 'Bitflyer', side: QuoteSide.Ask, price: 500001, volume: 0.01 }
         ])
     };
-    const quoineBa = {
-      broker: 'Quoine',
+    const liquidBa = {
+      broker: 'Liquid',
       fetchQuotes: () => Promise.resolve([])
     };
     const coincheckBa = {
       broker: 'Coincheck',
       fetchQuotes: () => Promise.resolve([])
     };
-    const baList = [bitflyerBa, quoineBa, coincheckBa];
+    const baList = [bitflyerBa, liquidBa, coincheckBa];
     const baRouter = new BrokerAdapterRouter(baList);
     const aggregator: QuoteAggregator = new QuoteAggregator(configStore, baRouter);
     const fn = jest.fn();
@@ -275,15 +275,15 @@ describe('Quote Aggregator', () => {
           { broker: 'Bitflyer', side: QuoteSide.Ask, price: 500001, volume: 0.01 }
         ])
     };
-    const quoineBa = {
-      broker: 'Quoine',
+    const liquidBa = {
+      broker: 'Liquid',
       fetchQuotes: () => Promise.resolve([])
     };
     const coincheckBa = {
       broker: 'Coincheck',
       fetchQuotes: () => Promise.resolve([])
     };
-    const baList = [bitflyerBa, quoineBa, coincheckBa];
+    const baList = [bitflyerBa, liquidBa, coincheckBa];
     const baRouter = new BrokerAdapterRouter(baList);
     const aggregator: QuoteAggregator = new QuoteAggregator(configStore, baRouter);
     await aggregator.start();
@@ -297,21 +297,21 @@ describe('Quote Aggregator', () => {
       broker: 'Bitflyer',
       fetchQuotes: () => Promise.resolve([])
     };
-    const quoineBa = {
-      broker: 'Quoine',
+    const liquidBa = {
+      broker: 'Liquid',
       fetchQuotes: jest.fn()
     };
     const coincheckBa = {
       broker: 'Coincheck',
       fetchQuotes: () => Promise.resolve([])
     };
-    const baList = [bitflyerBa, quoineBa, coincheckBa];
+    const baList = [bitflyerBa, liquidBa, coincheckBa];
     const baRouter = new BrokerAdapterRouter(baList);
     const aggregator: QuoteAggregator = new QuoteAggregator(configStore, baRouter);
     aggregator.isRunning = true;
     await aggregator.start();
     await aggregator.stop();
-    expect(quoineBa.fetchQuotes).not.toBeCalled();
+    expect(liquidBa.fetchQuotes).not.toBeCalled();
   });
 
   test('fetchQuotes throws', async () => {
@@ -320,8 +320,8 @@ describe('Quote Aggregator', () => {
       broker: 'Bitflyer',
       fetchQuotes: () => Promise.resolve([])
     };
-    const quoineBa = {
-      broker: 'Quoine',
+    const liquidBa = {
+      broker: 'Liquid',
       fetchQuotes: async () => {
         throw new Error('Mock fetchQuotes failed.');
       }
@@ -330,7 +330,7 @@ describe('Quote Aggregator', () => {
       broker: 'Coincheck',
       fetchQuotes: () => Promise.resolve([])
     };
-    const baList = [bitflyerBa, quoineBa, coincheckBa];
+    const baList = [bitflyerBa, liquidBa, coincheckBa];
     const baRouter = new BrokerAdapterRouter(baList);
     const aggregator: QuoteAggregator = new QuoteAggregator(configStore, baRouter);
     await aggregator.start();

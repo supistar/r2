@@ -1,7 +1,7 @@
 // tslint:disable
 import * as nock from 'nock';
 import * as _ from 'lodash';
-import BrokerAdapterImpl from '../../Quoine/BrokerAdapterImpl';
+import BrokerAdapterImpl from '../../Liquid/BrokerAdapterImpl';
 import { OrderStatus, Broker, CashMarginType, OrderSide, OrderType, BrokerConfigType } from '../../types';
 import nocksetup from './nocksetup';
 import OrderImpl from '../../OrderImpl';
@@ -10,13 +10,13 @@ import { createOrder } from '../helper';
 options.enabled = false;
 
 const brokerConfig = {
-  broker: 'Quoine',
+  broker: 'Liquid',
   key: 'key',
   secret: 'secret',
   cashMarginType: CashMarginType.NetOut
 } as BrokerConfigType;
 
-describe('Quoine BrokerAdapter', () => {
+describe('Liquid BrokerAdapter', () => {
   beforeAll(() => {
     nocksetup();
   });
@@ -27,7 +27,7 @@ describe('Quoine BrokerAdapter', () => {
 
   test('send leverage buy limit', async () => {
     const target = new BrokerAdapterImpl(brokerConfig);
-    const order = createOrder('Quoine', OrderSide.Buy, 0.01, 783000, CashMarginType.NetOut, OrderType.Limit, 10);
+    const order = createOrder('Liquid', OrderSide.Buy, 0.01, 783000, CashMarginType.NetOut, OrderType.Limit, 10);
     await target.send(order);
     expect(order.status).toBe(OrderStatus.New);
     expect(order.brokerOrderId).toBe('118573146');
@@ -35,10 +35,10 @@ describe('Quoine BrokerAdapter', () => {
 
   test('send cash buy limit', async () => {
     const config = {
-      brokers: [{ broker: 'Quoine', key: 'key', secret: 'secret', cashMarginType: CashMarginType.Cash }]
+      brokers: [{ broker: 'Liquid', key: 'key', secret: 'secret', cashMarginType: CashMarginType.Cash }]
     };
     const target = new BrokerAdapterImpl(brokerConfig);
-    const order = createOrder('Quoine', OrderSide.Buy, 0.01, 783000, CashMarginType.Cash, OrderType.Limit, 10);
+    const order = createOrder('Liquid', OrderSide.Buy, 0.01, 783000, CashMarginType.Cash, OrderType.Limit, 10);
     await target.send(order);
     expect(order.status).toBe(OrderStatus.New);
     expect(order.brokerOrderId).toBe('118573146');
@@ -57,7 +57,7 @@ describe('Quoine BrokerAdapter', () => {
 
   test('send wrong symbol', async () => {
     const target = new BrokerAdapterImpl(brokerConfig);
-    const order = { broker: 'Quoine', symbol: 'ZZZ' };
+    const order = { broker: 'Liquid', symbol: 'ZZZ' };
     try {
       await target.send(order);
     } catch (ex) {
@@ -68,7 +68,7 @@ describe('Quoine BrokerAdapter', () => {
 
   test('send wrong order type', async () => {
     const target = new BrokerAdapterImpl(brokerConfig);
-    const order = { broker: 'Quoine', symbol: 'BTC/JPY', type: OrderType.StopLimit };
+    const order = { broker: 'Liquid', symbol: 'BTC/JPY', type: OrderType.StopLimit };
     try {
       await target.send(order);
     } catch (ex) {
@@ -80,7 +80,7 @@ describe('Quoine BrokerAdapter', () => {
   test('send wrong margin type', async () => {
     const target = new BrokerAdapterImpl(brokerConfig);
     const order = {
-      broker: 'Quoine',
+      broker: 'Liquid',
       symbol: 'BTC/JPY',
       type: OrderType.Market,
       cashMarginType: CashMarginType.MarginOpen
@@ -97,7 +97,7 @@ describe('Quoine BrokerAdapter', () => {
     const target = new BrokerAdapterImpl(brokerConfig);
     const result = await target.fetchQuotes();
     expect(result.length).toBe(42);
-    result.forEach(q => expect(q.broker).toBe('Quoine'));
+    result.forEach(q => expect(q.broker).toBe('Liquid'));
   });
 
   test('getBtcPosition Margin', async () => {
@@ -108,7 +108,7 @@ describe('Quoine BrokerAdapter', () => {
 
   test('getBtcPosition Cash', async () => {
     const cashConfig = {
-      broker: 'Quoine',
+      broker: 'Liquid',
       key: 'key',
       secret: 'secret',
       cashMarginType: CashMarginType.Cash
@@ -120,7 +120,7 @@ describe('Quoine BrokerAdapter', () => {
 
   test('getBtcPosition strategy not found', async () => {
     const wrongConfig = {
-      broker: 'Quoine',
+      broker: 'Liquid',
       key: 'key',
       secret: 'secret',
       cashMarginType: CashMarginType.MarginOpen
@@ -155,7 +155,7 @@ describe('Quoine BrokerAdapter', () => {
       status: 'New',
       creationTime: '2017-11-06T23:46:56.635Z',
       executions: [],
-      broker: 'Quoine',
+      broker: 'Liquid',
       size: 0.01,
       side: 'Buy',
       price: 783000,
@@ -179,7 +179,7 @@ describe('Quoine BrokerAdapter', () => {
       status: 'New',
       creationTime: '2017-11-06T23:46:56.635Z',
       executions: [],
-      broker: 'Quoine',
+      broker: 'Liquid',
       size: 0.01,
       side: 'Buy',
       price: 783000,
@@ -203,7 +203,7 @@ describe('Quoine BrokerAdapter', () => {
       status: 'New',
       creationTime: '2017-11-06T23:46:56.635Z',
       executions: [],
-      broker: 'Quoine',
+      broker: 'Liquid',
       size: 0.01,
       side: 'Buy',
       price: 783000,
@@ -227,7 +227,7 @@ describe('Quoine BrokerAdapter', () => {
       status: 'New',
       creationTime: '2017-11-06T23:46:56.635Z',
       executions: [],
-      broker: 'Quoine',
+      broker: 'Liquid',
       size: 0.01,
       side: 'Buy',
       price: 783000,

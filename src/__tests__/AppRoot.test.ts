@@ -10,7 +10,7 @@ describe('AppRoot', () => {
     const container = {};
     container.get = symbol => {
       if (symbol === symbols.ConfigStore) {
-        return { config: { brokers: [{ broker: 'Bitflyer' }, { broker: 'Coincheck' }, { broker: 'Quoine' }] } };
+        return { config: { brokers: [{ broker: 'Bitflyer' }, { broker: 'Coincheck' }, { broker: 'Liquid' }] } };
       }
       return service;
     };
@@ -29,7 +29,7 @@ describe('AppRoot', () => {
     const container = {};
     container.get = symbol => {
       if (symbol === symbols.ConfigStore) {
-        return { config: { brokers: [{ broker: 'Unknown' }, { broker: 'Coincheck' }, { broker: 'Quoine' }] } };
+        return { config: { brokers: [{ broker: 'Unknown' }, { broker: 'Coincheck' }, { broker: 'Liquid' }] } };
       }
       return service;
     };
@@ -48,7 +48,7 @@ describe('AppRoot', () => {
       if (symbol === symbols.ConfigStore) {
         return {
           config: {
-            brokers: [{ broker: 'Unknown', npmPath: 'Unknown' }, { broker: 'Coincheck' }, { broker: 'Quoine' }]
+            brokers: [{ broker: 'Unknown', npmPath: 'Unknown' }, { broker: 'Coincheck' }, { broker: 'Liquid' }]
           }
         };
       }
@@ -69,7 +69,7 @@ describe('AppRoot', () => {
       if (symbol === symbols.ConfigStore) {
         return {
           config: {
-            brokers: [{ broker: 'Unknown', npmPath: '@bitr/castable' }, { broker: 'Coincheck' }, { broker: 'Quoine' }]
+            brokers: [{ broker: 'Unknown', npmPath: '@bitr/castable' }, { broker: 'Coincheck' }, { broker: 'Liquid' }]
           }
         };
       }

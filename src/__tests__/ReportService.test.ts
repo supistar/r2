@@ -72,7 +72,7 @@ describe('ReportService', () => {
       config: {
         minSize: 0.005,
         maxSize: 100,
-        brokers: [{ broker: 'Coincheck', commissionPercent: 0 }, { broker: 'Quoine', commissionPercent: 0 }]
+        brokers: [{ broker: 'Coincheck', commissionPercent: 0 }, { broker: 'Liquid', commissionPercent: 0 }]
       }
     } as any);
     const timeSeries = { put: jest.fn() };
@@ -85,8 +85,8 @@ describe('ReportService', () => {
     await quoteAggregator.emitParallel('quoteUpdated', [
       toQuote('Coincheck', QuoteSide.Ask, 3, 1),
       toQuote('Coincheck', QuoteSide.Bid, 2, 2),
-      toQuote('Quoine', QuoteSide.Ask, 3.5, 3),
-      toQuote('Quoine', QuoteSide.Bid, 2.5, 4)
+      toQuote('Liquid', QuoteSide.Ask, 3.5, 3),
+      toQuote('Liquid', QuoteSide.Bid, 2.5, 4)
     ]);
     await rs.stop();
     expect(quoteAggregator.listenerCount('quoteUpdated')).toBe(0);
@@ -126,7 +126,7 @@ describe('ReportService', () => {
         plugin: 'SimpleSpreadStatHandler.js',
         initialHistory: { minutes: 10 }
       },
-      brokers: [{ broker: 'Coincheck', commissionPercent: 0 }, { broker: 'Quoine', commissionPercent: 0 }]
+      brokers: [{ broker: 'Coincheck', commissionPercent: 0 }, { broker: 'Liquid', commissionPercent: 0 }]
     };
     const quoteAggregator = createQuoteAggregatorMock();
     const spreadAnalyzer = new SpreadAnalyzer({ config });
@@ -140,8 +140,8 @@ describe('ReportService', () => {
       await quoteAggregator.emitParallel('quoteUpdated', [
         toQuote('Coincheck', QuoteSide.Ask, 3, 1),
         toQuote('Coincheck', QuoteSide.Bid, 2, 2),
-        toQuote('Quoine', QuoteSide.Ask, 3.5, 3),
-        toQuote('Quoine', QuoteSide.Bid, 2.5, 4)
+        toQuote('Liquid', QuoteSide.Ask, 3.5, 3),
+        toQuote('Liquid', QuoteSide.Bid, 2.5, 4)
       ]);
       await rs.stop();
       expect(quoteAggregator.listenerCount('quoteUpdated')).toBe(0);
@@ -160,7 +160,7 @@ describe('ReportService', () => {
         plugin: 'SimpleSpreadStatHandler.js',
         initialHistory: { minutes: 10 }
       },
-      brokers: [{ broker: 'Coincheck', commissionPercent: 0 }, { broker: 'Quoine', commissionPercent: 0 }]
+      brokers: [{ broker: 'Coincheck', commissionPercent: 0 }, { broker: 'Liquid', commissionPercent: 0 }]
     };
     const quoteAggregator = createQuoteAggregatorMock();
     const spreadAnalyzer = new SpreadAnalyzer({ config });
@@ -193,7 +193,7 @@ describe('ReportService', () => {
         plugin: 'SimpleSpreadStatHandler.js',
         initialHistory: { minutes: 10 }
       },
-      brokers: [{ broker: 'Coincheck', commissionPercent: 0 }, { broker: 'Quoine', commissionPercent: 0 }]
+      brokers: [{ broker: 'Coincheck', commissionPercent: 0 }, { broker: 'Liquid', commissionPercent: 0 }]
     };
     const quoteAggregator = createQuoteAggregatorMock();
     const spreadAnalyzer = new SpreadAnalyzer({ config });

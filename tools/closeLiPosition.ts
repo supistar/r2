@@ -1,5 +1,5 @@
-// Ad-hoc script to close all trades in quoine.
-import QuoineApi from '../src/Quoine/BrokerApi';
+// Ad-hoc script to close all trades in Liquid.
+import LiquidApi from '../src/Liquid/BrokerApi';
 import { options } from '@bitr/logger';
 import { findBrokerConfig, getConfigRoot } from '../src/configUtil';
 
@@ -7,12 +7,12 @@ options.enabled = false;
 
 async function main() {
   const config = getConfigRoot();
-  const quConfig = findBrokerConfig(config, 'Quoine');
-  const quApi = new QuoineApi(quConfig.key, quConfig.secret);
+  const quConfig = findBrokerConfig(config, 'Liquid');
+  const quApi = new LiquidApi(quConfig.key, quConfig.secret);
 
-  // quoine margin balance
+  // Liquid margin balance
   try {
-    console.log('Closing all in Quoine...');
+    console.log('Closing all in Liquid...');
     await quApi.closeAll();
     console.log('Done.');
   } catch (ex) {

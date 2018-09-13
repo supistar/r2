@@ -13,7 +13,7 @@ const config = {
   positionRefreshInterval: 5000,
   brokers: [
     {
-      broker: 'Quoine',
+      broker: 'Liquid',
       enabled: true,
       maxLongPosition: 0.3,
       maxShortPosition: 0
@@ -29,7 +29,7 @@ const config = {
 
 const configStore = { config };
 const baRouter = {
-  getPositions: broker => (broker === 'Quoine' ? new Map([['BTC', 0.2]]) : new Map([['BTC', -0.3]]))
+  getPositions: broker => (broker === 'Liquid' ? new Map([['BTC', 0.2]]) : new Map([['BTC', -0.3]]))
 };
 const bst = new BrokerStabilityTracker(configStore);
 
@@ -49,7 +49,7 @@ describe('Position Service', () => {
     expect(ccPos.shortAllowed).toBe(false);
     expect(ccPos.allowedLongSize).toBe(1.3);
     expect(ccPos.allowedShortSize).toBe(0);
-    const qPos = _.find(positions, x => x.broker === 'Quoine');
+    const qPos = _.find(positions, x => x.broker === 'Liquid');
     expect(qPos.baseCcyPosition).toBe(0.2);
     expect(qPos.longAllowed).toBe(true);
     expect(qPos.shortAllowed).toBe(true);
@@ -72,7 +72,7 @@ describe('Position Service', () => {
 
   test('positions smaller than minSize', async () => {
     const baRouter = {
-      getPositions: broker => (broker === 'Quoine' ? new Map([['BTC', 0.000002]]) : new Map([['BTC', -0.3]]))
+      getPositions: broker => (broker === 'Liquid' ? new Map([['BTC', 0.000002]]) : new Map([['BTC', -0.3]]))
     };
     const ps = new PositionService(configStore, baRouter, bst);
     await ps.start();
@@ -88,7 +88,7 @@ describe('Position Service', () => {
     expect(ccPos.shortAllowed).toBe(false);
     expect(ccPos.allowedLongSize).toBe(1.3);
     expect(ccPos.allowedShortSize).toBe(0);
-    const qPos = _.find(positions, x => x.broker === 'Quoine');
+    const qPos = _.find(positions, x => x.broker === 'Liquid');
     expect(qPos.baseCcyPosition).toBe(0.000002);
     expect(qPos.longAllowed).toBe(true);
     expect(qPos.shortAllowed).toBe(false);
@@ -127,7 +127,7 @@ describe('Position Service', () => {
       positionRefreshInterval: 5000,
       brokers: [
         {
-          broker: 'Quoine',
+          broker: 'Liquid',
           enabled: true,
           maxLongPosition: 0.3,
           maxShortPosition: 0
@@ -143,7 +143,7 @@ describe('Position Service', () => {
 
     const configStore = { config };
     const baRouter = {
-      getPositions: broker => (broker === 'Quoine' ? new Map([['BTC', 0.2]]) : new Map([['BTC', -0.3]]))
+      getPositions: broker => (broker === 'Liquid' ? new Map([['BTC', 0.2]]) : new Map([['BTC', -0.3]]))
     };
     const bst = new BrokerStabilityTracker(configStore);
     const ps = new PositionService(configStore, baRouter, bst);

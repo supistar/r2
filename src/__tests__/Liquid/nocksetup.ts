@@ -3,8 +3,8 @@
 import * as nock from 'nock';
 
 function nocksetup() {
-  const quoine = nock('https://api.quoine.com');
-  quoine.get('/orders/118573146').reply(200, {
+  const liquid = nock('https://api.liquid.com');
+  liquid.get('/orders/118573146').reply(200, {
     id: 118573146,
     order_type: 'limit',
     quantity: '0.01',
@@ -37,7 +37,7 @@ function nocksetup() {
     ],
     stop_triggered_time: null
   });
-  quoine.get('/orders/118573146').reply(200, {
+  liquid.get('/orders/118573146').reply(200, {
     id: 118573146,
     order_type: 'limit',
     quantity: '0.01',
@@ -77,7 +77,7 @@ function nocksetup() {
     ],
     stop_triggered_time: null
   });
-  quoine.get('/orders/118573146').reply(200, {
+  liquid.get('/orders/118573146').reply(200, {
     id: 118573146,
     order_type: 'limit',
     quantity: '0.01',
@@ -110,7 +110,7 @@ function nocksetup() {
     ],
     stop_triggered_time: null
   });
-  quoine
+  liquid
     .post(
       '/orders/',
       '{"order":{"price":783000,"product_id":"5","order_direction":"netout","order_type":"limit","side":"buy","quantity":0.01,"leverage_level":10}}'
@@ -141,7 +141,7 @@ function nocksetup() {
       unwound_trade_id: null,
       trade_id: '1417636'
     });
-  quoine
+  liquid
     .post('/orders/', '{"order":{"price":783000,"product_id":"5","order_type":"limit","side":"buy","quantity":0.01}}')
     .reply(200, {
       id: 118573146,
@@ -168,7 +168,7 @@ function nocksetup() {
       unwound_trade_id: null,
       trade_id: '1417636'
     });
-  quoine.get('/trading_accounts').reply(200, [
+  liquid.get('/trading_accounts').reply(200, [
     {
       id: 123456,
       leverage_level: 2,
@@ -258,7 +258,7 @@ function nocksetup() {
       funding_currency: 'SGD'
     }
   ]);
-  quoine.get('/trading_accounts').reply(200, [
+  liquid.get('/trading_accounts').reply(200, [
     {
       id: 123456,
       leverage_level: 2,
@@ -348,7 +348,7 @@ function nocksetup() {
       funding_currency: 'SGD'
     }
   ]);
-  quoine.get('/products/5/price_levels').reply(200, {
+  liquid.get('/products/5/price_levels').reply(200, {
     buy_price_levels: [
       ['810391.00', '1.40000000'],
       ['810390.01', '0.15900000'],
@@ -396,9 +396,9 @@ function nocksetup() {
       ['815000.00', '0.10000000']
     ]
   });
-  quoine.get('/products/5/price_levels').reply(500);
-  quoine.put('/orders/118573146/cancel').reply(200);
-  quoine.put('/trades/close_all').reply(200, [
+  liquid.get('/products/5/price_levels').reply(500);
+  liquid.put('/orders/118573146/cancel').reply(200);
+  liquid.put('/trades/close_all').reply(200, [
     {
       id: 12345,
       currency_pair_code: 'BTCJPY',
@@ -427,7 +427,7 @@ function nocksetup() {
       close_fee: '0.0'
     }
   ]);
-  quoine.get('/accounts/balance').reply(200, [
+  liquid.get('/accounts/balance').reply(200, [
     {
       currency: 'BTC',
       balance: '0.04925688'
@@ -441,7 +441,7 @@ function nocksetup() {
       balance: '356.01377'
     }
   ]);
-  quoine.get('/accounts/balance').reply(200, []);
+  liquid.get('/accounts/balance').reply(200, []);
 }
 
 export default nocksetup;

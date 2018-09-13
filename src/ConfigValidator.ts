@@ -36,14 +36,14 @@ export default class ConfigValidator {
       this.validateBrokerConfigCommon(coincheck);
     }
 
-    const quoine = findBrokerConfig(config, 'Quoine');
-    if (this.isEnabled(quoine)) {
+    const liquid = findBrokerConfig(config, 'Liquid');
+    if (this.isEnabled(liquid)) {
       const allowedCashMarginType = [CashMarginType.Cash, CashMarginType.NetOut];
       this.throwIf(
-        !_.includes(allowedCashMarginType, quoine.cashMarginType),
-        'CashMarginType must be Cash or NetOut for Quoine.'
+        !_.includes(allowedCashMarginType, liquid.cashMarginType),
+        'CashMarginType must be Cash or NetOut for Liquid.'
       );
-      this.validateBrokerConfigCommon(quoine);
+      this.validateBrokerConfigCommon(liquid);
     }
   }
 

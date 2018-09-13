@@ -21,9 +21,9 @@ Coincheck, BTC, Cash, 0.123
 Coincheck, JPY, Margin, 200000
 Coincheck, JPY, Free Margin, 123456
 Coincheck, BTC, Leverage Position, 3.456
-Quoine, JPY, Margin, 300000
-Quoine, JPY, Free Margin, 123456
-Quoine, BTC, Leverage Position, 0.01
+Liquid, JPY, Margin, 300000
+Liquid, JPY, Free Margin, 123456
+Liquid, BTC, Leverage Position, 0.01
 ```
 
 ## closeCcPosition - Coincheckの全レバレッジポジションを成行注文でクローズ
@@ -38,10 +38,10 @@ npm run closeCcPosition
 npm run closeBfPosition
 ```
 
-## closeQuPosition - Quoineの全レバレッジポジションを成行注文でクローズ
+## closeLiPosition - Liquidの全レバレッジポジションを成行注文でクローズ
 
 ```bash
-npm run closeQuPosition
+npm run closeLiPosition
 ```
 
 ## clearPairs - R2が保持しているオープンペア情報をクリアする(取引は送信されません)

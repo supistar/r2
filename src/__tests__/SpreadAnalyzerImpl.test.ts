@@ -17,7 +17,7 @@ const positionMap = {
     longAllowed: true,
     shortAllowed: true
   },
-  Quoine: {
+  Liquid: {
     allowedLongSize: 10,
     allowedShortSize: 10,
     longAllowed: true,
@@ -30,15 +30,15 @@ describe('Spread Analyzer', () => {
     const quotes = [
       toQuote('Coincheck', QuoteSide.Ask, 3, 1),
       toQuote('Coincheck', QuoteSide.Bid, 2, 2),
-      toQuote('Quoine', QuoteSide.Ask, 3.5, 3),
-      toQuote('Quoine', QuoteSide.Bid, 2.5, 4)
+      toQuote('Liquid', QuoteSide.Ask, 3.5, 3),
+      toQuote('Liquid', QuoteSide.Bid, 2.5, 4)
     ];
     const target = new SpreadAnalyzer(configStore);
     const result = await target.analyze(quotes, positionMap);
     expect(result.ask.broker).toBe('Coincheck');
     expect(result.ask.price).toBe(3);
     expect(result.ask.volume).toBe(1);
-    expect(result.bid.broker).toBe('Quoine');
+    expect(result.bid.broker).toBe('Liquid');
     expect(result.bid.price).toBe(2.5);
     expect(result.bid.volume).toBe(4);
     expect(result.invertedSpread).toBe(-0.5);
@@ -50,15 +50,15 @@ describe('Spread Analyzer', () => {
     const quotes = [
       toQuote('Coincheck', QuoteSide.Ask, 300000, 1),
       toQuote('Coincheck', QuoteSide.Bid, 200000, 2),
-      toQuote('Quoine', QuoteSide.Ask, 350000, 3),
-      toQuote('Quoine', QuoteSide.Bid, 360000, 4)
+      toQuote('Liquid', QuoteSide.Ask, 350000, 3),
+      toQuote('Liquid', QuoteSide.Bid, 360000, 4)
     ];
     const target = new SpreadAnalyzer(configStore);
     const result = await target.analyze(quotes, positionMap);
     expect(result.ask.broker).toBe('Coincheck');
     expect(result.ask.price).toBe(300000);
     expect(result.ask.volume).toBe(1);
-    expect(result.bid.broker).toBe('Quoine');
+    expect(result.bid.broker).toBe('Liquid');
     expect(result.bid.price).toBe(360000);
     expect(result.bid.volume).toBe(4);
     expect(result.invertedSpread).toBe(60000);
@@ -71,15 +71,15 @@ describe('Spread Analyzer', () => {
       toQuote('Coincheck', QuoteSide.Ask, 300000, 1),
       toQuote('Coincheck', QuoteSide.Bid, 200000, 2),
       toQuote('Coincheck', QuoteSide.Ask, 100000, 0.0099),
-      toQuote('Quoine', QuoteSide.Ask, 350000, 3),
-      toQuote('Quoine', QuoteSide.Bid, 360000, 4)
+      toQuote('Liquid', QuoteSide.Ask, 350000, 3),
+      toQuote('Liquid', QuoteSide.Bid, 360000, 4)
     ];
     const target = new SpreadAnalyzer(configStore);
     const result = await target.analyze(quotes, positionMap);
     expect(result.ask.broker).toBe('Coincheck');
     expect(result.ask.price).toBe(300000);
     expect(result.ask.volume).toBe(1);
-    expect(result.bid.broker).toBe('Quoine');
+    expect(result.bid.broker).toBe('Liquid');
     expect(result.bid.price).toBe(360000);
     expect(result.bid.volume).toBe(4);
     expect(result.invertedSpread).toBe(60000);
@@ -92,15 +92,15 @@ describe('Spread Analyzer', () => {
     const quotes = [
       toQuote('Coincheck', QuoteSide.Ask, 300000, 1),
       toQuote('Coincheck', QuoteSide.Bid, 200000, 2),
-      toQuote('Quoine', QuoteSide.Ask, 350000, 3),
-      toQuote('Quoine', QuoteSide.Bid, 360000, 4)
+      toQuote('Liquid', QuoteSide.Ask, 350000, 3),
+      toQuote('Liquid', QuoteSide.Bid, 360000, 4)
     ];
     const target = new SpreadAnalyzer(configStore);
     const result = await target.analyze(quotes, positionMap);
     expect(result.ask.broker).toBe('Coincheck');
     expect(result.ask.price).toBe(300000);
     expect(result.ask.volume).toBe(1);
-    expect(result.bid.broker).toBe('Quoine');
+    expect(result.bid.broker).toBe('Liquid');
     expect(result.bid.price).toBe(360000);
     expect(result.bid.volume).toBe(4);
     expect(result.invertedSpread).toBe(60000);
@@ -112,8 +112,8 @@ describe('Spread Analyzer', () => {
     const quotes = [
       toQuote('Coincheck', QuoteSide.Ask, 300000, 1),
       toQuote('Coincheck', QuoteSide.Bid, 200000, 2),
-      toQuote('Quoine', QuoteSide.Ask, 350000, 3),
-      toQuote('Quoine', QuoteSide.Bid, 360000, 4)
+      toQuote('Liquid', QuoteSide.Ask, 350000, 3),
+      toQuote('Liquid', QuoteSide.Bid, 360000, 4)
     ];
     const target = new SpreadAnalyzer(configStore);
     try {
@@ -128,7 +128,7 @@ describe('Spread Analyzer', () => {
   test('analyze with no best bid', async () => {
     const quotes = [
       toQuote('Coincheck', QuoteSide.Ask, 3, 1),
-      toQuote('Quoine', QuoteSide.Ask, 3.5, 3)
+      toQuote('Liquid', QuoteSide.Ask, 3.5, 3)
     ];
     const target = new SpreadAnalyzer(configStore);
     try {
@@ -143,7 +143,7 @@ describe('Spread Analyzer', () => {
   test('analyze with no best ask', async () => {
     const quotes = [
       toQuote('Coincheck', QuoteSide.Bid, 3, 1),
-      toQuote('Quoine', QuoteSide.Bid, 3.5, 3)
+      toQuote('Liquid', QuoteSide.Bid, 3.5, 3)
     ];
     const target = new SpreadAnalyzer(configStore);
     try {
@@ -158,7 +158,7 @@ describe('Spread Analyzer', () => {
   test('invalid closingPairs', async () => {
     const quotes = [
       toQuote('Coincheck', QuoteSide.Bid, 3, 1),
-      toQuote('Quoine', QuoteSide.Bid, 3.5, 3)
+      toQuote('Liquid', QuoteSide.Bid, 3.5, 3)
     ];
     const target = new SpreadAnalyzer(configStore);
     try {
@@ -174,8 +174,8 @@ describe('Spread Analyzer', () => {
     const quotes = [
       toQuote('Coincheck', QuoteSide.Ask, 3, 1),
       toQuote('Coincheck', QuoteSide.Bid, 2, 2),
-      toQuote('Quoine', QuoteSide.Ask, 3.5, 3),
-      toQuote('Quoine', QuoteSide.Bid, 2.5, 4)
+      toQuote('Liquid', QuoteSide.Ask, 3.5, 3),
+      toQuote('Liquid', QuoteSide.Bid, 2.5, 4)
     ];
     const target = new SpreadAnalyzer(configStore);
     const spreadStat = await target.getSpreadStat(quotes);
@@ -183,14 +183,14 @@ describe('Spread Analyzer', () => {
     expect(bestCase.ask.broker).toBe('Coincheck');
     expect(bestCase.ask.price).toBe(3);
     expect(bestCase.ask.volume).toBe(1);
-    expect(bestCase.bid.broker).toBe('Quoine');
+    expect(bestCase.bid.broker).toBe('Liquid');
     expect(bestCase.bid.price).toBe(2.5);
     expect(bestCase.bid.volume).toBe(4);
     expect(bestCase.invertedSpread).toBe(-0.5);
     expect(bestCase.targetVolume).toBe(0.5);
     expect(bestCase.targetProfit).toBeCloseTo(0);
     const worstCase = spreadStat.worstCase;
-    expect(worstCase.ask.broker).toBe('Quoine');
+    expect(worstCase.ask.broker).toBe('Liquid');
     expect(worstCase.ask.price).toBe(3.5);
     expect(worstCase.ask.volume).toBe(3);
     expect(worstCase.bid.broker).toBe('Coincheck');
@@ -204,7 +204,7 @@ describe('Spread Analyzer', () => {
   test('getSpreadStat no bid', async () => {
     const quotes = [
       toQuote('Coincheck', QuoteSide.Ask, 3, 1),
-      toQuote('Quoine', QuoteSide.Ask, 3.5, 3),
+      toQuote('Liquid', QuoteSide.Ask, 3.5, 3),
     ];
     const target = new SpreadAnalyzer(configStore);
     const spreadStat = await target.getSpreadStat(quotes);
@@ -215,7 +215,7 @@ describe('Spread Analyzer', () => {
     const quotes = [
       toQuote('Coincheck', QuoteSide.Ask, 3, 1),      
       toQuote('Coincheck', QuoteSide.Bid, 2, 2),
-      toQuote('Quoine', QuoteSide.Ask, 3.5, 3)
+      toQuote('Liquid', QuoteSide.Ask, 3.5, 3)
     ];
     const target = new SpreadAnalyzer(configStore);
     const spreadStat = await target.getSpreadStat(quotes);
@@ -229,15 +229,15 @@ describe('Spread Analyzer', () => {
     const quotes = [
       toQuote('Coincheck', QuoteSide.Ask, 300000, 1),
       toQuote('Coincheck', QuoteSide.Bid, 200000, 2),
-      toQuote('Quoine', QuoteSide.Ask, 350000, 3),
-      toQuote('Quoine', QuoteSide.Bid, 360000, 4)
+      toQuote('Liquid', QuoteSide.Ask, 350000, 3),
+      toQuote('Liquid', QuoteSide.Bid, 360000, 4)
     ];
     const target = new SpreadAnalyzer(configStore);
     const result = await target.analyze(quotes, positionMap);
-    expect(result.ask.broker).toBe('Quoine');
+    expect(result.ask.broker).toBe('Liquid');
     expect(result.ask.price).toBe(350000);
     expect(result.ask.volume).toBe(3);
-    expect(result.bid.broker).toBe('Quoine');
+    expect(result.bid.broker).toBe('Liquid');
     expect(result.bid.price).toBe(360000);
     expect(result.bid.volume).toBe(4);
     expect(result.invertedSpread).toBe(10000);

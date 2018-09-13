@@ -61,7 +61,7 @@
       "noTradePeriods": [["04:00", "04:15"]]
     },
     {
-      "broker": "Quoine",
+      "broker": "Liquid",
       "enabled": true,
       "key": "xxxxxx",
       "secret": "xxxxxx",

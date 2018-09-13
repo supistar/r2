@@ -68,7 +68,7 @@ R2 supports the following exchanges.
 |Exchange|Cash|Margin|
 |----|------|-----------|
 |bitFlyer|✔️|✔️*|
-|Quoine|✔️|✔️|
+|Liquid|✔️|✔️|
 |Coincheck|✔️|✔️|
 |bitbank.cc|️️️✔️|| 
 |BTCBox|✔️|| 
@@ -191,7 +191,7 @@ The onSingleLeg config specifies what action should be taken when only one leg i
 ### Broker config
 |Name|Values|Description|
 |----|------|-----------|
-|broker|Bitflyer, Quoine or Coincheck|Broker name|
+|broker|Bitflyer, Liquid or Coincheck|Broker name|
 |npmPath|string|npm package name for the broker plugin.|
 |enabled|true or false|Enable the broker for arbitrage|
 |key|string|Broker API Key|
@@ -207,12 +207,12 @@ The onSingleLeg config specifies what action should be taken when only one leg i
 |Exchange|Supported option|
 |--------|----------------|
 |Bitflyer|Cash|
-|Quoine|Cash, NetOut|
+|Liquid|Cash, NetOut|
 |Coincheck|Cash, MarginOpen, NetOut|
 |Bitbankcc|Cash|
 |Btcbox|Cash|
 
-Quoine's NetOut is natively handled by Exchange API. Quoine can close multiple positions by one order.
+Liquid's NetOut is natively handled by Exchange API. Liquid can close multiple positions by one order.
 Coincheck's NetOut is artificially handled by R2 because the exchange doesn't support netout operation. Coincheck's NetOut works as below.
 1. The arbitrager finds leverage positions with the following conditions.
   - The opposite side of the sending order

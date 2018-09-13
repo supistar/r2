@@ -69,7 +69,7 @@ describe('Arbitrager', () => {
           commissionPercent: 0
         },
         {
-          broker: 'Quoine',
+          broker: 'Liquid',
           cashMarginType: CashMarginType.NetOut,
           leverageLevel: 9,
           maxLongPosition: 100,
@@ -87,7 +87,7 @@ describe('Arbitrager', () => {
         shortAllowed: true,
         baseCcyPosition: 0.1
       },
-      Quoine: {
+      Liquid: {
         allowedLongSize: 10,
         allowedShortSize: 10,
         longAllowed: true,
@@ -121,8 +121,8 @@ describe('Arbitrager', () => {
     quotes = [
       toQuote('Coincheck', QuoteSide.Ask, 3, 1),
       toQuote('Coincheck', QuoteSide.Bid, 2, 2),
-      toQuote('Quoine', QuoteSide.Ask, 3.5, 3),
-      toQuote('Quoine', QuoteSide.Bid, 2.5, 4)
+      toQuote('Liquid', QuoteSide.Ask, 3.5, 3),
+      toQuote('Liquid', QuoteSide.Bid, 2.5, 4)
     ];
 
     await activePairStore.delAll();
@@ -190,7 +190,7 @@ describe('Arbitrager', () => {
   test('violate maxNetExposure', async () => {
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 400, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 400, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: -100,
         targetVolume: 1,
@@ -218,7 +218,7 @@ describe('Arbitrager', () => {
   test('Spread not inverted', async () => {
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 400, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 400, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: -100,
         targetVolume: 1,
@@ -246,7 +246,7 @@ describe('Arbitrager', () => {
     config.minTargetProfit = 1000;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -275,7 +275,7 @@ describe('Arbitrager', () => {
     config.minTargetProfitPercent = 18.4;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -304,7 +304,7 @@ describe('Arbitrager', () => {
     config.minTargetProfitPercent = 10;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -332,7 +332,7 @@ describe('Arbitrager', () => {
     config.maxTargetProfit = 99;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -360,7 +360,7 @@ describe('Arbitrager', () => {
     config.maxTargetProfitPercent = 15;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -389,7 +389,7 @@ describe('Arbitrager', () => {
     config.demoMode = true;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -421,7 +421,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -462,7 +462,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -502,7 +502,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -535,7 +535,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -574,7 +574,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -613,7 +613,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -651,7 +651,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -690,7 +690,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -729,7 +729,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -767,7 +767,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -805,7 +805,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -843,7 +843,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -881,7 +881,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -927,7 +927,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 1;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -973,7 +973,7 @@ describe('Arbitrager', () => {
       });
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockReturnValue({
-      bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+      bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
       ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
       invertedSpread: 100,
       availableVolume: 1,
@@ -1012,7 +1012,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1051,7 +1051,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1090,7 +1090,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1128,7 +1128,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1166,7 +1166,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1204,7 +1204,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1242,7 +1242,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1281,7 +1281,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1311,7 +1311,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1338,7 +1338,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1368,7 +1368,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1399,7 +1399,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1430,7 +1430,7 @@ describe('Arbitrager', () => {
     config.maxRetryCount = 3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1461,7 +1461,7 @@ describe('Arbitrager', () => {
     config.brokers[2].commissionPercent = 0.3;
     spreadAnalyzer.analyze.mockImplementation(() => {
       return {
-        bid: toQuote('Quoine', QuoteSide.Bid, 600, 4),
+        bid: toQuote('Liquid', QuoteSide.Bid, 600, 4),
         ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
         invertedSpread: 100,
         availableVolume: 1,
@@ -1486,8 +1486,8 @@ describe('Arbitrager', () => {
 
   test('Close filled orders', async () => {
     const quotes = [
-      toQuote('Quoine', QuoteSide.Ask, 700, 4),
-      toQuote('Quoine', QuoteSide.Bid, 600, 4),
+      toQuote('Liquid', QuoteSide.Ask, 700, 4),
+      toQuote('Liquid', QuoteSide.Bid, 600, 4),
       toQuote('Coincheck', QuoteSide.Ask, 500, 1),
       toQuote('Coincheck', QuoteSide.Bid, 400, 1)
     ];
@@ -1518,13 +1518,13 @@ describe('Arbitrager', () => {
 
   test('Close two sets of filled orders', async () => {
     const quotes = [
-      toQuote('Quoine', QuoteSide.Ask, 700, 4),
-      toQuote('Quoine', QuoteSide.Bid, 600, 4),
+      toQuote('Liquid', QuoteSide.Ask, 700, 4),
+      toQuote('Liquid', QuoteSide.Bid, 600, 4),
       toQuote('Coincheck', QuoteSide.Ask, 500, 1),
       toQuote('Coincheck', QuoteSide.Bid, 400, 1)
     ];
     const quotes2 = [
-      toQuote('Quoine', QuoteSide.Bid, 601, 4),
+      toQuote('Liquid', QuoteSide.Bid, 601, 4),
       toQuote('Coincheck', QuoteSide.Ask, 501, 1)
     ];
     baRouter.refresh.mockImplementation(order => (order.status = OrderStatus.Filled));
@@ -1566,8 +1566,8 @@ describe('Arbitrager', () => {
 
   test('Close filled orders with minExitTargetProfitPercent', async () => {
     const quotes = [
-      toQuote('Quoine', QuoteSide.Ask, 700, 4),
-      toQuote('Quoine', QuoteSide.Bid, 600, 4),
+      toQuote('Liquid', QuoteSide.Ask, 700, 4),
+      toQuote('Liquid', QuoteSide.Bid, 600, 4),
       toQuote('Coincheck', QuoteSide.Ask, 500, 1),
       toQuote('Coincheck', QuoteSide.Bid, 400, 1)
     ];
@@ -1598,8 +1598,8 @@ describe('Arbitrager', () => {
 
   test('Not close filled orders with minExitTargetProfitPercent', async () => {
     const quotes = [
-      toQuote('Quoine', QuoteSide.Ask, 700, 4),
-      toQuote('Quoine', QuoteSide.Bid, 600, 4),
+      toQuote('Liquid', QuoteSide.Ask, 700, 4),
+      toQuote('Liquid', QuoteSide.Bid, 600, 4),
       toQuote('Coincheck', QuoteSide.Ask, 500, 1),
       toQuote('Coincheck', QuoteSide.Bid, 400, 1)
     ];
@@ -1630,8 +1630,8 @@ describe('Arbitrager', () => {
 
   test('Close two filled orders', async () => {
     const quotes = [
-      toQuote('Quoine', QuoteSide.Ask, 700, 4),
-      toQuote('Quoine', QuoteSide.Bid, 600, 4),
+      toQuote('Liquid', QuoteSide.Ask, 700, 4),
+      toQuote('Liquid', QuoteSide.Bid, 600, 4),
       toQuote('Coincheck', QuoteSide.Ask, 500, 1),
       toQuote('Coincheck', QuoteSide.Bid, 400, 1)
     ];
@@ -1660,8 +1660,8 @@ describe('Arbitrager', () => {
 
     //closing
     const quotes2 = [
-      toQuote('Quoine', QuoteSide.Ask, 620, 4),
-      toQuote('Quoine', QuoteSide.Bid, 600, 4),
+      toQuote('Liquid', QuoteSide.Ask, 620, 4),
+      toQuote('Liquid', QuoteSide.Bid, 600, 4),
       toQuote('Coincheck', QuoteSide.Ask, 500, 1),
       toQuote('Coincheck', QuoteSide.Bid, 450, 1)
     ];
@@ -1675,8 +1675,8 @@ describe('Arbitrager', () => {
 
   test('Closing filled orders with no lastResult in spread analyzer', async () => {
     const quotes = [
-      toQuote('Quoine', QuoteSide.Ask, 700, 4),
-      toQuote('Quoine', QuoteSide.Bid, 600, 4),
+      toQuote('Liquid', QuoteSide.Ask, 700, 4),
+      toQuote('Liquid', QuoteSide.Bid, 600, 4),
       toQuote('Coincheck', QuoteSide.Ask, 500, 1),
       toQuote('Coincheck', QuoteSide.Bid, 400, 1)
     ];
@@ -1707,8 +1707,8 @@ describe('Arbitrager', () => {
 
   test('Closing filled orders when spread analyzer throws', async () => {
     const quotes = [
-      toQuote('Quoine', QuoteSide.Ask, 700, 4),
-      toQuote('Quoine', QuoteSide.Bid, 600, 4),
+      toQuote('Liquid', QuoteSide.Ask, 700, 4),
+      toQuote('Liquid', QuoteSide.Bid, 600, 4),
       toQuote('Coincheck', QuoteSide.Ask, 500, 1),
       toQuote('Coincheck', QuoteSide.Bid, 400, 1)
     ];
@@ -1747,7 +1747,7 @@ describe('Arbitrager', () => {
       .fn()
       .mockImplementationOnce(() => {
         return {
-          bid: toQuote('Quoine', QuoteSide.Bid, 600, 3),
+          bid: toQuote('Liquid', QuoteSide.Bid, 600, 3),
           ask: toQuote('Coincheck', QuoteSide.Ask, 500, 1),
           invertedSpread: 100,
           availableVolume: 2,
@@ -1757,7 +1757,7 @@ describe('Arbitrager', () => {
       })
       .mockImplementation(() => {
         return {
-          bid: toQuote('Quoine', QuoteSide.Bid, 700, 2),
+          bid: toQuote('Liquid', QuoteSide.Bid, 700, 2),
           ask: toQuote('Coincheck', QuoteSide.Ask, 400, 1),
           invertedSpread: 300,
           availableVolume: 1,
@@ -1787,8 +1787,8 @@ describe('Arbitrager', () => {
 
   test('Close filled orders with exitNetProfitRatio', async () => {
     const quotes = [
-      toQuote('Quoine', QuoteSide.Ask, 700, 4),
-      toQuote('Quoine', QuoteSide.Bid, 600, 4),
+      toQuote('Liquid', QuoteSide.Ask, 700, 4),
+      toQuote('Liquid', QuoteSide.Bid, 600, 4),
       toQuote('Coincheck', QuoteSide.Ask, 500, 1),
       toQuote('Coincheck', QuoteSide.Bid, 400, 1)
     ];
@@ -1823,8 +1823,8 @@ describe('Arbitrager', () => {
 
   test('Not close filled orders with exitNetProfitRatio', async () => {
     const quotes = [
-      toQuote('Quoine', QuoteSide.Ask, 700, 4),
-      toQuote('Quoine', QuoteSide.Bid, 600, 4),
+      toQuote('Liquid', QuoteSide.Ask, 700, 4),
+      toQuote('Liquid', QuoteSide.Bid, 600, 4),
       toQuote('Coincheck', QuoteSide.Ask, 500, 1),
       toQuote('Coincheck', QuoteSide.Bid, 400, 1)
     ];
@@ -1859,8 +1859,8 @@ describe('Arbitrager', () => {
 
   test('Not close filled orders with exitNetProfitRatio and commission', async () => {
     const quotes = [
-      toQuote('Quoine', QuoteSide.Ask, 700, 4),
-      toQuote('Quoine', QuoteSide.Bid, 600, 4),
+      toQuote('Liquid', QuoteSide.Ask, 700, 4),
+      toQuote('Liquid', QuoteSide.Bid, 600, 4),
       toQuote('Coincheck', QuoteSide.Ask, 500, 1),
       toQuote('Coincheck', QuoteSide.Bid, 400, 1)
     ];

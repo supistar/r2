@@ -20,7 +20,7 @@ import NetOutStrategy from './NetOutStrategy';
 
 export default class BrokerAdapterImpl implements BrokerAdapter {
   private readonly brokerApi: BrokerApi;
-  readonly broker = 'Quoine';
+  readonly broker = 'Liquid';
   readonly strategyMap: Map<CashMarginType, CashMarginTypeStrategy>;
 
   constructor(private readonly config: BrokerConfigType) {

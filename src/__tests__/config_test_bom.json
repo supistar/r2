@@ -32,7 +32,7 @@
       "commissionPercent": 0
     },
     {
-      "broker": "Quoine",
+      "broker": "Liquid",
       "enabled": "true",
       "key": "xxxxx",
       "secret": "xxxxx",
